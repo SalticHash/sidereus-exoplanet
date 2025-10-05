@@ -1,4 +1,3 @@
-# lang.py
 from __future__ import annotations
 
 from typing import Any, Dict
@@ -15,6 +14,8 @@ from flask import request
 
 def _deep_merge(override: Any, base: Any) -> Any:
     """Recursively merge override into base; prefer override when not None."""
+    # Performs a recursive merge between dictionaries, keeping override values
+    # Realiza una fusión recursiva entre diccionarios, conservando los valores de override
     if isinstance(override, dict) and isinstance(base, dict):
         merged: Dict[str, Any] = dict(base)
         for k, v in override.items():
@@ -24,14 +25,15 @@ def _deep_merge(override: Any, base: Any) -> Any:
 
 
 class LanguageDict:
-    """Language access for templates with Accept-Language negotiation and per-key fallback to 'en'."""
+    """Language access with fallback and HTTP Accept-Language negotiation."""
 
     def __init__(self, path: str = "./static/lang/"):
+        # Loads all language files and ensures English as fallback
+        # Carga todos los archivos de idioma y asegura el inglés como respaldo
         self._path = path
         self._data: Dict[str, Dict[str, Any]] = {}
         self.langs: list[str] = []
 
-        # Load all .toml files in the directory
         for filename in listdir(path):
             root, ext = splitext(filename)
             if ext != ".toml":
@@ -40,11 +42,10 @@ class LanguageDict:
                 self._data[root] = toml_loader.load(f)
             self.langs.append(root)
 
-        # Ensure global fallback exists
         self._data.setdefault("en", {})
 
     def _select_language(self) -> tuple[str, Dict[str, Any], Dict[str, Any]]:
-        """Return (code, user_lang_dict, en_dict). Fallback to 'en' without request."""
+        """Return (code, user_lang_dict, en_dict)."""
         try:
             langs = request.accept_languages
             best = langs.best_match(self.langs) or "en"
@@ -57,16 +58,15 @@ class LanguageDict:
         return best, user, en
 
     def _resolve(self, key: str) -> Any:
-        """Resolve a top-level key for current language with per-key fallback."""
+        """Resolve a key for current language with fallback."""
         code, user, en = self._select_language()
 
         if key == "user":
-            return code  # expose negotiated language code
+            return code
 
         u_val = user.get(key) if isinstance(user, dict) else None
         e_val = en.get(key) if isinstance(en, dict) else None
 
-        # Deep-merge dicts to allow key-level fallback
         if isinstance(u_val, dict) or isinstance(e_val, dict):
             u_dict = u_val if isinstance(u_val, dict) else {}
             e_dict = e_val if isinstance(e_val, dict) else {}
@@ -74,24 +74,18 @@ class LanguageDict:
 
         return u_val if u_val is not None else e_val
 
-    def __getattr__(self, key: str) -> Any:
-        """Attribute-style access in templates."""
-        value = self._resolve(key)
-        return {} if value is None else value
-
-    def __getitem__(self, key: str) -> Any:
-        """Item-style access in templates."""
-        value = self._resolve(key)
-        return {} if value is None else value
-
     def as_dict(self) -> Dict[str, Any]:
-        """Return merged user/en dictionary snapshot."""
+        # Returns a combined snapshot of the current language and English
+        # Devuelve una combinación de las traducciones actuales e inglés
         _, user, en = self._select_language()
         return _deep_merge(user, en)
 
     def __repr__(self) -> str:
+        # Prints useful debug info about loaded languages
+        # Muestra información útil de depuración sobre los idiomas cargados
         return f"<LanguageDict langs={self.langs!r} base_path={self._path!r}>"
 
 
-# Global instance exposed to the app
+# Global instance used by the app
+# Instancia global utilizada por la aplicación
 LANG = LanguageDict()
