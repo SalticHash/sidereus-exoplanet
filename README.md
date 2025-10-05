@@ -11,5 +11,5 @@ Este proyecto es nuestra solución al desafío "A World Away: Hunting for Exopla
 ## Nuestro Equipo 
 Está conformado por 3 personas, trabajando en conjunto pero con una división de trabajos clara, definida previa al comienzo del desafío, para una vez este hubiera comenzado, poder aprovechar el tiempo de manera sensta y llevar el proyecto al mayor grado de culminación posible: 
 -Mathias Rojas Valverde: Estudiante del Colegio Científico de Costa Rica, sede San Carlos. Responsable del modelado y creación del algoritmo de aprendizaje automático.
--Ignacio Alberto Carmiol Jimenez: Estudiante en el Colegio Diocesano Padre Eladio Sancho, San Carlos. Responsable de elaborar el backend y mayor parte de la implementación de este algoritmo en una app web. 
--Aaron Eduardo Valerio Barrante: Estudiante del Colegio Científico de Costa Rica, sede San Carlos. Responsable por el frontend de la app web. 
++Ignacio Alberto Carmiol Jimenez: Estudiante en el Colegio Diocesano Padre Eladio Sancho, San Carlos. Responsable de elaborar el backend y mayor parte de la implementación de este algoritmo en una app web. 
+*Aaron Eduardo Valerio Barrante: Estudiante del Colegio Científico de Costa Rica, sede San Carlos. Responsable por el frontend de la app web. 
