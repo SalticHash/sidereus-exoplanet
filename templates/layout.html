@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="{{lang.user}}" data-bs-theme="dark" prefix="og: https://ogp.me/ns#">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- The first part is for dynamic titles then * and page title -->
+        <title>{% block title %}{% endblock %} &bull; Space App Challenge</title>
+        
+        
+
+        <!-- https://favicon.io/emoji-favicons/glowing-star/ -->
+        <link href="/static/assets/favicon.ico" rel="icon">
+
+        <!-- Styles -->
+        <link href="/static/styles.css" rel="stylesheet">
+
+        {% block head %}{% endblock %}
+    </head>
+
+    <body>
+        <main class="container-fluid py-5" id="main">
+            {% block main %}{% endblock %}
+        </main>
+
+        <footer class="mb-5 small footer-fit">
+            <!-- We can put this to use -->
+        </footer>
+    </body>
+</html>

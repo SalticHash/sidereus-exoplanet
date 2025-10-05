@@ -1,0 +1,15 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Error {{ req.statuscode }}
+{% endblock %}
+
+{% block main %}
+<!-- Center all -->
+    <div class="card container mb-3 flex-center" style="height: 60vh">
+        <h2 class="card-title">Error {{ req.statuscode }}!?</h2>
+        <p class="card-text">{{ req.text }}</p>
+        <img src="/static/assets/errorChihuahua.jpg" class="rounded" alt="A white error chihuahua."
+            style="object-fit: cover; height: 190px; width: 150px;">
+    </div>
+{% endblock %}
