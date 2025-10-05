@@ -1,235 +1,175 @@
 {% extends "layout.html" %}
+{% block title %}Sidereus – Exoplanet Classifier{% endblock %}
+{% block content %}
 
-{% block title %}
-    {{lang.index.title}}
-{% endblock %}
-
-{% block main %}
-
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Sidereus - Sistema de clasificación de exoplanetas usando machine learning">
-  <title>Sidereus - Exoplanet Finder</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <!-- Header -->
-  <header class="header">
-    <div class="container header-content">
-      <div class="header-title">
-        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-        </svg>
-        <h1>Sidereus, exoplanet finder/h1>
-      </div>
-      
-      <div class="header-buttons">
-        <button class="btn btn-outline" id="btnModelData">
-          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <ellipse cx="12" cy="5" rx="9" ry="3"/>
-            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
-            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
-          </svg>
-          Model Data
-        </button>
-        <button class="btn btn-outline" id="btnEndpoints">
-          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
-            <polyline points="14 2 14 8 20 8"/>
-            <line x1="16" y1="13" x2="8" y2="13"/>
-            <line x1="16" y1="17" x2="8" y2="17"/>
-          </svg>
-          API Endpoints
-        </button>
-      </div>
+  <div class="card">
+    <div class="tabs">
+      <button class="tab active" data-tab="simple">Consulta Simple</button>
+      <button class="tab" data-tab="complete">Consulta Completa</button>
     </div>
-  </header>
 
-  <!-- Main Content -->
-  <main class="main-content">
-    <div class="container">
-      <div class="card">
-        <!-- Tabs -->
-        <div class="tabs">
-          <button class="tab active" data-tab="simple">Consulta Simple</button>
-          <button class="tab" data-tab="complete">Consulta Completa</button>
+    <div id="simpleForm" class="tab-content active">
+      <form id="formSimple" class="form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="s_orbital_period">Período Orbital (días)</label>
+            <input type="number" step="any" id="s_orbital_period" placeholder="Ej: 3.5234">
+          </div>
+
+          <div class="form-group">
+            <label for="s_planet_radius">Radio del Planeta (R⊕)</label>
+            <input type="number" step="any" id="s_planet_radius" placeholder="Ej: 1.2">
+          </div>
+
+          <div class="form-group full-width">
+            <label for="s_equilibrium_temp">Temperatura de Equilibrio (K)</label>
+            <input type="number" step="any" id="s_equilibrium_temp" placeholder="Ej: 288">
+          </div>
         </div>
 
-        <!-- Simple Query Form -->
-        <div id="simpleForm" class="tab-content active">
-          <form id="formSimple" class="form">
-            <div class="form-grid">
-              <div class="form-group">
-                <label for="s_orbital_period">Período Orbital (días)</label>
-                <input type="number" step="any" id="s_orbital_period" placeholder="Ej: 3.5234">
-              </div>
+        <div id="simpleResult" class="result hidden"></div>
 
-              <div class="form-group">
-                <label for="s_planet_radius">Radio del Planeta (R⊕)</label>
-                <input type="number" step="any" id="s_planet_radius" placeholder="Ej: 1.2">
-              </div>
-
-              <div class="form-group full-width">
-                <label for="s_equilibrium_temp">Temperatura de Equilibrio (K)</label>
-                <input type="number" step="any" id="s_equilibrium_temp" placeholder="Ej: 288">
-              </div>
-            </div>
-
-            <div id="simpleResult" class="result hidden"></div>
-
-            <div class="form-actions">
-              <button type="submit" class="btn btn-primary flex-1">
-                <span class="loader hidden"></span>
-                Generar Predicción
-              </button>
-              <button type="button" class="btn btn-outline" id="btnClearSimple">
-                <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="3 6 5 6 21 6"/>
-                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                </svg>
-              </button>
-            </div>
-          </form>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary flex-1">
+            <span class="loader hidden"></span>
+            Generar Predicción
+          </button>
+          <button type="button" class="btn btn-outline" id="btnClearSimple" title="Limpiar">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            </svg>
+          </button>
         </div>
-
-        <!-- Complete Query Form -->
-        <div id="completeForm" class="tab-content">
-          <form id="formComplete" class="form">
-            <div class="form-grid">
-              <div class="form-group">
-                <label for="c_orbital_period">Período Orbital (días)</label>
-                <input type="number" step="any" id="c_orbital_period" placeholder="Ej: 3.5234">
-              </div>
-
-              <div class="form-group">
-                <label for="c_planet_radius">Radio del Planeta (R⊕)</label>
-                <input type="number" step="any" id="c_planet_radius" placeholder="Ej: 1.2">
-              </div>
-
-              <div class="form-group">
-                <label for="c_equilibrium_temp">Temperatura de Equilibrio (K)</label>
-                <input type="number" step="any" id="c_equilibrium_temp" placeholder="Ej: 288">
-              </div>
-
-              <div class="form-group">
-                <label for="c_insolation_flux">Flujo de Insolación</label>
-                <input type="number" step="any" id="c_insolation_flux" placeholder="Ej: 1.0">
-              </div>
-
-              <div class="form-group">
-                <label for="c_star_radius">Radio Estelar (R☉)</label>
-                <input type="number" step="any" id="c_star_radius" placeholder="Ej: 1.0">
-              </div>
-
-              <div class="form-group">
-                <label for="c_star_mass">Masa Estelar (M☉)</label>
-                <input type="number" step="any" id="c_star_mass" placeholder="Ej: 1.0">
-              </div>
-
-              <div class="form-group">
-                <label for="c_star_temp">Temperatura Estelar (K)</label>
-                <input type="number" step="any" id="c_star_temp" placeholder="Ej: 5778">
-              </div>
-
-              <div class="form-group">
-                <label for="c_transit_depth">Profundidad de Tránsito (ppm)</label>
-                <input type="number" step="any" id="c_transit_depth" placeholder="Ej: 100">
-              </div>
-            </div>
-
-            <div id="completeResult" class="result hidden"></div>
-
-            <div class="form-actions">
-              <button type="submit" class="btn btn-primary flex-1">
-                <span class="loader hidden"></span>
-                Generar Predicción
-              </button>
-              <button type="button" class="btn btn-outline" id="btnClearComplete">
-                <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <polyline points="3 6 5 6 21 6"/>
-                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-                </svg>
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
+      </form>
     </div>
-  </main>
 
-  <!-- Model Data Dialog -->
+    <div id="completeForm" class="tab-content">
+      <form id="formComplete" class="form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="c_orbital_period">Período Orbital (días)</label>
+            <input type="number" step="any" id="c_orbital_period" placeholder="Ej: 3.5234">
+          </div>
+
+          <div class="form-group">
+            <label for="c_planet_radius">Radio del Planeta (R⊕)</label>
+            <input type="number" step="any" id="c_planet_radius" placeholder="Ej: 1.2">
+          </div>
+
+          <div class="form-group">
+            <label for="c_equilibrium_temp">Temperatura de Equilibrio (K)</label>
+            <input type="number" step="any" id="c_equilibrium_temp" placeholder="Ej: 288">
+          </div>
+
+          <div class="form-group">
+            <label for="c_insolation_flux">Flujo de Insolación</label>
+            <input type="number" step="any" id="c_insolation_flux" placeholder="Ej: 1.0">
+          </div>
+
+          <div class="form-group">
+            <label for="c_star_radius">Radio Estelar (R☉)</label>
+            <input type="number" step="any" id="c_star_radius" placeholder="Ej: 1.0">
+          </div>
+
+          <div class="form-group">
+            <label for="c_star_mass">Masa Estelar (M☉)</label>
+            <input type="number" step="any" id="c_star_mass" placeholder="Ej: 1.0">
+          </div>
+
+          <div class="form-group">
+            <label for="c_star_temp">Temperatura Estelar (K)</label>
+            <input type="number" step="any" id="c_star_temp" placeholder="Ej: 5778">
+          </div>
+
+          <div class="form-group">
+            <label for="c_transit_depth">Profundidad de Tránsito (ppm)</label>
+            <input type="number" step="any" id="c_transit_depth" placeholder="Ej: 100">
+          </div>
+        </div>
+
+        <div id="completeResult" class="result hidden"></div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary flex-1">
+            <span class="loader hidden"></span>
+            Generar Predicción
+          </button>
+          <button type="button" class="btn btn-outline" id="btnClearComplete" title="Limpiar">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+            </svg>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <div id="dialogMetrics" class="dialog">
     <div class="dialog-overlay"></div>
     <div class="dialog-content">
       <div class="dialog-header">
         <h2>Model Data & Metrics</h2>
-        <button class="dialog-close">&times;</button>
+        <button class="dialog-close" data-close>&times;</button>
       </div>
       <p class="dialog-description">Performance metrics and threshold information for the exoplanet classification model</p>
       
       <div class="dialog-body">
         <div class="metrics-section">
           <h3>Overall Metrics</h3>
-          
           <div class="metric-item">
             <div class="metric-header">
               <span class="metric-label">AUC (Area Under Curve)</span>
-              <span class="metric-value">0.943</span>
+              <span class="metric-value" id="auc-text">—</span>
             </div>
             <div class="progress-bar">
-              <div class="progress-fill" style="width: 94.3%"></div>
+              <div class="progress-fill" id="auc-bar" style="width:0%"></div>
             </div>
           </div>
 
           <div class="metric-item">
             <div class="metric-header">
               <span class="metric-label">Average Precision</span>
-              <span class="metric-value">0.891</span>
+              <span class="metric-value" id="ap-text">—</span>
             </div>
             <div class="progress-bar">
-              <div class="progress-fill" style="width: 89.1%"></div>
+              <div class="progress-fill" id="ap-bar" style="width:0%"></div>
             </div>
           </div>
 
           <div class="metric-item border-top">
             <div class="metric-header">
               <span class="metric-label">Validation Size</span>
-              <span class="metric-value">1247</span>
+              <span class="metric-value" id="val-size">—</span>
             </div>
           </div>
         </div>
 
         <div class="metrics-section">
           <h3>TAU Thresholds</h3>
-          <div class="badges">
-            <span class="badge badge-green">High: 0.75</span>
-            <span class="badge badge-yellow">Balanced: 0.50</span>
-            <span class="badge badge-red">Low: 0.25</span>
+          <div class="badges" id="tau-badges">
           </div>
         </div>
 
         <div class="data-sources">
           <h4>Data Sources</h4>
           <ul>
-            <li>• K2 Mission Dataset</li>
-            <li>• Kepler Objects of Interest (KOI)</li>
-            <li>• TESS Objects of Interest (TOI)</li>
+            <li>K2 Mission Dataset</li>
+            <li>Kepler Objects of Interest (KOI)</li>
+            <li>TESS Objects of Interest (TOI)</li>
           </ul>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- API Endpoints Dialog -->
   <div id="dialogEndpoints" class="dialog">
     <div class="dialog-overlay"></div>
     <div class="dialog-content">
       <div class="dialog-header">
         <h2>API Endpoints</h2>
-        <button class="dialog-close">&times;</button>
+        <button class="dialog-close" data-close>&times;</button>
       </div>
       <p class="dialog-description">Available REST API endpoints for the Sidereus exoplanet classification system</p>
       
@@ -239,17 +179,8 @@
             <span class="badge badge-green">GET</span>
             <h3>Read Endpoints</h3>
           </div>
-          <ul class="endpoint-list">
-            <li>/api/endpoints</li>
-            <li>/api/metrics</li>
-            <li>/api/thresholds</li>
-            <li>/api/examples/</li>
-            <li>/api/examples/simpleRequest.json</li>
-            <li>/api/examples/completeRequest.json</li>
-            <li>/data/</li>
-            <li>/data/K2.csv</li>
-            <li>/data/KOI.csv</li>
-            <li>/data/TOI.csv</li>
+          <ul class="endpoint-list" id="list-get">
+            <li>Cargando…</li>
           </ul>
         </div>
 
@@ -258,14 +189,14 @@
             <span class="badge badge-blue">POST</span>
             <h3>Write Endpoints</h3>
           </div>
-          <ul class="endpoint-list">
-            <li>/api/calculateDisposition</li>
+          <ul class="endpoint-list" id="list-post">
+            <li>Cargando…</li>
           </ul>
         </div>
 
         <div class="example-request">
           <h4>Example Request</h4>
-          <pre><code>POST /api/calculateDisposition
+<pre><code>POST /api/calculateDisposition
 Content-Type: application/json
 
 {
@@ -278,10 +209,4 @@ Content-Type: application/json
     </div>
   </div>
 
-  <!-- Toast Container -->
-  <div id="toastContainer" class="toast-container"></div>
-
-  <script src="app.js"></script>
-</body>
-</html>
 {% endblock %}
