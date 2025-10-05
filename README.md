@@ -32,6 +32,6 @@ This project is our solution to the NASA Space App Challenge Costa Rica 2025 "A 
 ...
 ## Our Team: 
 It is made up of three people working together, but with a clear division of labor, defined prior to the start of the challenge, so that once it has begun, they can use their time wisely and bring the project to the highest possible level of completion:
-- Mathias Rojas Valverde: Student at the San Carlos Campus of the Scientific College of Costa Rica. Responsible for the modeling and creation of the machine learning algorithm.
+- Mathias Rojas Valverde: Student at the San Carlos Campus of the Scientific Highschool of Costa Rica. Responsible for the modeling and creation of the machine learning algorithm.
 + Ignacio Alberto Carmiol Jimenez: Student at the Padre Eladio Sancho Diocesan School in San Carlos. Responsible for developing the backend and most of the implementation of this algorithm in a web app.
-* Aaron Eduardo Valerio Barrante: Student at the San Carlos Campus of the Scientific College of Costa Rica. Responsible for desing the UI of the web app.
+* Aaron Eduardo Valerio Barrante: Student at the San Carlos Campus of the Scientific Highschool of Costa Rica. Responsible for desing the UI of the web app.
