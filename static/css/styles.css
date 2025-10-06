@@ -1,8 +1,3 @@
-/* ============================
-   Sidereus – Minimal Dark UI (formal)
-   ============================ */
-
-/* --- Reset & Base --- */
 *,
 *::before,
 *::after { box-sizing: border-box; }
@@ -10,14 +5,14 @@
 html, body { height: 100%; }
 
 :root{
-  /* Paleta oscura */
-  --bg: #0f1422;           /* fondo general */
-  --panel: #161b2b;        /* tarjetas y paneles */
-  --text: #e7ecff;         /* texto principal */
-  --muted: #9aa3c0;        /* texto secundario */
-  --line: #232a40;         /* líneas separadoras */
 
-  --primary: #5f87ff;      /* acento sobrio */
+  --bg: #0f1422;         
+  --panel: #161b2b;      
+  --text: #e7ecff;        
+  --muted: #9aa3c0;     
+  --line: #232a40;      
+
+  --primary: #5f87ff;  
   --primary-600: #476bff;
   --primary-100: rgba(95,135,255,0.16);
 
@@ -38,7 +33,6 @@ html, body { height: 100%; }
   --space-5: 28px;
   --space-6: 40px;
 
-  /* Animaciones suaves */
   --focus: 0 0 0 3px rgba(95,135,255,0.25);
   --transition: 160ms ease-out;
   --fade: 220ms cubic-bezier(.2,.7,.2,1);
@@ -60,14 +54,12 @@ body{
   background-size: cover;
 }
 
-/* --- Layout container --- */
 .container{
   max-width: 1100px;
   margin: 90px auto var(--space-6);
   padding: 0 var(--space-4);
 }
 
-/* --- Top actions bar --- */
 .top-actions{
   position: sticky;
   top: 0;
@@ -81,7 +73,6 @@ body{
   border-bottom: 1px solid var(--line);
 }
 
-/* --- Typography helpers --- */
 .section-title{
   margin: 0 0 var(--space-3) 0;
   font-size: 1.12rem;
@@ -94,7 +85,6 @@ body{
   font-size: 0.95rem;
 }
 
-/* --- Welcome box --- */
 .welcome-box{
   text-align: center;
   margin-top: var(--space-6);
@@ -115,7 +105,6 @@ body{
   color: var(--muted);
 }
 
-/* --- Tabs --- */
 .tabs{
   display: inline-flex;
   gap: 2px;
@@ -145,7 +134,6 @@ body{
   box-shadow: inset 0 0 0 1px rgba(95,135,255,0.28);
 }
 
-/* --- Cards & panels --- */
 .card{
   background: var(--panel);
   border: 1px solid var(--line);
@@ -155,7 +143,6 @@ body{
   margin-bottom: var(--space-5);
 }
 
-/* --- Grid forms --- */
 .form-grid{
   display: grid;
   grid-template-columns: repeat(12, 1fr);
@@ -174,7 +161,6 @@ body{
   font-size: 0.97rem;
 }
 
-/* --- Inputs --- */
 .input{
   width: 100%;
   height: 42px;
@@ -194,7 +180,6 @@ body{
   background: #111733;
 }
 
-/* --- Info button (minimal SVG) --- */
 .info-btn{
   appearance: none;
   border: 1px solid var(--line);
@@ -206,7 +191,6 @@ body{
   background: #0f1424;
   cursor: pointer;
   transition: background var(--transition), border var(--transition), filter var(--transition), transform var(--transition);
-  /* oculta texto interno si lo hubiera */
   font-size: 0;
   line-height: 0;
 }
@@ -225,7 +209,6 @@ body{
   transform: translateY(-1px);
 }
 
-/* --- Buttons --- */
 .btn{
   appearance: none;
   border: 1px solid var(--line);
@@ -249,7 +232,6 @@ body{
 .btn.primary:hover{ background: var(--primary-600); border-color: var(--primary-600); }
 .btn.ghost{ background: #0f1424; color: var(--text); }
 
-/* Loader pill inside primary button */
 .loader{
   display: inline-block;
   width: 8px; height: 8px;
@@ -257,13 +239,12 @@ body{
   border-radius: 50%;
   border: 2px solid currentColor;
   border-right-color: transparent;
-  animation: spin 900ms linear infinite; /* suave */
+  animation: spin 900ms linear infinite;
 }
 .hidden{ display: none !important; }
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* --- Form actions --- */
 .form-actions{
   display: flex;
   gap: var(--space-2);
@@ -271,11 +252,9 @@ body{
   align-items: center;
 }
 
-/* --- Tab content visibility --- */
 .tab-content{ display: none; }
 .tab-content.active{ display: block; }
 
-/* --- Result & badges --- */
 .result-box{
   margin-top: var(--space-3);
   padding: var(--space-3);
@@ -295,7 +274,6 @@ body{
   margin-bottom: 6px;
 }
 
-/* --- Table (data/precision pages) --- */
 .table{
   width: 100%;
   border-collapse: collapse;
@@ -321,7 +299,6 @@ body{
 }
 .table tbody tr:hover{ background: rgba(255,255,255,0.03); }
 
-/* --- Toasts --- */
 .toast-container{
   position: fixed;
   right: 20px;
@@ -341,7 +318,6 @@ body{
 }
 .toast.error{ background: #2a0f17; border-color: #531f2a; color: #ffd9df; }
 
-/* --- Tooltip (fade-in suave) --- */
 .tooltip{
   position: absolute;
   max-width: 320px;
@@ -355,7 +331,6 @@ body{
   box-shadow: var(--shadow);
   z-index: 1000;
 
-  /* fade-in suave */
   opacity: 0;
   pointer-events: none;
   transform: translateY(-4px);
@@ -367,7 +342,6 @@ body{
   transform: translateY(0);
 }
 
-/* --- Utilities --- */
 code{
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
   background: #0f1528;
@@ -377,7 +351,6 @@ code{
   color: #d9e3ff;
 }
 
-/* --- Responsive --- */
 @media (max-width: 980px){
   .form-item{ grid-column: span 12; }
   .container{ margin-top: 84px; }
