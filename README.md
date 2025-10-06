@@ -5,7 +5,88 @@ Este proyecto es nuestra solución al desafío "A World Away: Hunting for Exopla
 [Enlace oficial de la competencia](https://www.spaceappschallenge.org/2025/challenges/a-world-away-hunting-for-exoplanets-with-ai/)
 
 ## Nuestra Solución 
-...
+Sidereus-Exoplanet Finder is a web application built with Flask that uses a LightGBM-based machine learning model to analyze astronomical data from NASA missions such as Kepler, TESS, and K2, aiming to classify exoplanet candidates as real, false, or ambiguous based on parameters like orbital period, transit depth, and stellar characteristics. The app provides an intuitive interface where users can enter data, visualize predictions, and explore model metrics, while the backend handles requests, normalizes the inputs, and returns results in JSON format, automatically adapting the interface language to the user’s browser. To run it locally, the repository must be cloned and executed within a Python virtual environment (venv) to properly isolate dependencies; once the environment is activated, the required libraries listed in the requirements file can be installed, and the Flask server started to access the app through a local address. In essence, Sidereus serves as both an educational and scientific tool that illustrates how artificial intelligence can assist in the detection and classification of exoplanets, making advanced astronomical analysis accessible to students, researchers, and enthusiasts alike.
+
+Sidereus-Exoplanet Finder es una aplicación web desarrollada con Flask que utiliza un modelo de aprendizaje automático basado en LightGBM para analizar datos astronómicos de misiones de la NASA como Kepler, TESS y K2, con el objetivo de clasificar candidatos a exoplanetas como reales, falsos o ambiguos según parámetros como el período orbital, la profundidad del tránsito y las características estelares. La aplicación ofrece una interfaz intuitiva donde los usuarios pueden ingresar datos, visualizar predicciones y explorar métricas del modelo, mientras que el backend gestiona las solicitudes, normaliza los datos de entrada y devuelve los resultados en formato JSON, adaptando automáticamente el idioma de la interfaz al del navegador del usuario. Para ejecutarla localmente, se debe clonar el repositorio y correr el proyecto dentro de un entorno virtual de Python (venv) para aislar correctamente las dependencias; una vez activado el entorno, se instalan las librerías necesarias indicadas en el archivo de requisitos y se inicia el servidor Flask para acceder a la aplicación desde una dirección local. En esencia, Sidereus funciona como una herramienta tanto educativa como científica que demuestra cómo la inteligencia artificial puede asistir en la detección y clasificación de exoplanetas, haciendo que el análisis astronómico avanzado sea accesible para estudiantes, investigadores y entusiastas del espacio.
+
+How to run it step by step:
+Prerequisites: Have Python 3.11+ installed (3.12 works as well), along with pip and optionally Git. Make sure you are in the root folder of the project (where app.py and requirements.txt are located).
+
+
+Windows
+
+Create the environment: python -m venv venv
+Activate it: venv\Scripts\activate
+(Optional) Update pip: python -m pip install --upgrade pip
+Install dependencies: pip install -r requirements.txt
+Run the app: python app.py and open http://127.0.0.1:2727/
+
+
+Linux
+
+Create the environment: python3 -m venv venv
+Activate it: source venv/bin/activate
+(Optional) Update pip: python -m pip install --upgrade pip
+Install dependencies: pip install -r requirements.txt
+Run the app: python app.py and open http://127.0.0.1:2727/
+
+
+macOS
+
+Create the environment: python3 -m venv venv
+Activate it: source venv/bin/activate
+(Optional) Update pip: python -m pip install --upgrade pip
+Install dependencies: pip install -r requirements.txt
+• Note for macOS/Apple Silicon: if LightGBM fails to compile, install OpenMP with Homebrew (brew install libomp) and then run pip install lightgbm again.
+Run the app: python app.py and open http://127.0.0.1:2727/
+
+
+Quick Tips:
+
+To change the port: define PORT (Windows: set PORT=3000; Linux/macOS: export PORT=3000) before running python app.py.
+To disable debug mode: set FLASK_DEBUG=0.
+The prediction endpoint is /api/calculateDisposition (requires at least two of: orbital_period, transit_duration, transit_depth).
+If you want real predictions, place the model artifacts inside the model/ folder with the expected filenames (model_lgb.pkl, columns_used.json, thresholds.json, metrics.json). Without them, the interface will load but no inference will occur.
+
+
+Como correrlo paso a paso:
+Requisitos previos: Tener instalado Python 3.11+ (3.12 funciona), pip y Git (opcional). Sitúate en la carpeta raíz del proyecto (donde están app.py y requirements.txt).
+
+
+Windows
+
+Crea el entorno: python -m venv venv
+Actívalo: venv\Scripts\activate
+(Opcional) Actualiza pip: python -m pip install --upgrade pip
+Instala dependencias: pip install -r requirements.txt
+Ejecuta la app: python app.py y abre http://127.0.0.1:2727/
+
+
+Linux
+
+Crea el entorno: python3 -m venv venv
+Actívalo: source venv/bin/activate
+(Opcional) Actualiza pip: python -m pip install --upgrade pip
+Instala dependencias: pip install -r requirements.txt
+Ejecuta la app: python app.py y abre http://127.0.0.1:2727/
+
+
+macOS
+
+Crea el entorno: python3 -m venv venv
+Actívalo: source venv/bin/activate
+(Opcional) Actualiza pip: python -m pip install --upgrade pip
+Instala dependencias: pip install -r requirements.txt
+• Nota macOS/Apple Silicon: si LightGBM da error de compilación, instala OpenMP con Homebrew (brew install libomp) y vuelve a pip install lightgbm.
+Ejecuta la app: python app.py y abre http://127.0.0.1:2727/
+
+Consejos rápidos:
+
+Para cambiar el puerto: define PORT (Windows: set PORT=3000; Linux/macOS: export PORT=3000) antes de ejecutar python app.py.
+Para desactivar modo debug: define FLASK_DEBUG=0.
+El endpoint de predicción es /api/calculateDisposition (requiere al menos dos de: orbital_period, transit_duration, transit_depth).
+Si quieres predicciones reales, coloca los artefactos del modelo en la carpeta model/ con los nombres que el servidor espera (model_lgb.pkl, columns_used.json, thresholds.json, metrics.json). Sin ellos, la interfaz carga pero no habrá inferencia.
+
 
 ## Recursos Empleados  
 Para la aplicación completa usamos el lenguaje de programación **Python**, el cual nos da flexibilidad de uso al ser interpretado y tener una gran variedad de **librerías de código abierto** fáciles de usar.  
