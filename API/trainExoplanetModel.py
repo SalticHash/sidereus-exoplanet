@@ -342,7 +342,7 @@ def main():
     csv_paths = {
         'KOI': './static/data/KOI.csv',
         'TOI': './static/data/TOI.csv',
-        # 'K2': './static/data/K2.csv'
+        'K2': './static/data/K2.csv'
     }
     
     # Adjust paths if necessary
