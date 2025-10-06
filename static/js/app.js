@@ -10,9 +10,7 @@
   }
 
   function normKey(raw) {
-    // quita prefijo s_/c_
     let k = raw.replace(/^(s_|c_)/, "");
-    // mapeos compatibles con backend
     if (k.startsWith("star_")) k = "stellar_" + k.slice(5);
     if (k === "insolation_flux") k = "insolation";
     return k;
@@ -20,7 +18,6 @@
 
   function collectFromForm(form) {
     const data = {};
-    // toma todos los inputs con id que empiece en s_ o c_
     $$('input[id^="s_"], input[id^="c_"], select[id^="s_"], select[id^="c_"], textarea[id^="s_"], textarea[id^="c_"]', form)
       .forEach(el => {
         const key = normKey(el.id);
@@ -74,7 +71,7 @@
       if (el.type === "checkbox" || el.type === "radio") el.checked = false;
       else el.value = "";
     });
-    resultBox.innerHTML = "";
+    resultBox.textContent = "";
     resultBox.classList.add("hidden");
   }
 
@@ -84,50 +81,64 @@
     const clearBtn = document.getElementById(clearBtnId);
     if (!form || !resultBox) return;
 
-    // evita submit por defecto
     form.addEventListener("submit", e => e.preventDefault());
 
-    // captura el botón de submit del form actual
     const submitBtn = form.querySelector('button[type="submit"]');
-
-    // click en submit => API
     submitBtn?.addEventListener("click", (e) => {
       e.preventDefault();
       submitForm(form, resultBox, submitBtn);
     });
 
-    // botón limpiar
     clearBtn?.addEventListener("click", (e) => {
       e.preventDefault();
       clearForm(form, resultBox);
     });
   }
 
-  function main() {
-    wire("formSimple", "simpleResult", "btnClearSimple");
-    wire("formComplete", "completeResult", "btnClearComplete");
+  function showTab(which) {
+    const simple = document.getElementById("tab-simple");
+    const complete = document.getElementById("tab-complete");
+    const tabs = document.querySelectorAll(".tab");
+    if (!simple || !complete) {
+      simple?.classList.remove("hidden");
+      complete?.classList.remove("hidden");
+      return;
+    }
+    tabs.forEach(t => t.classList.remove("active"));
+    if (which === "complete") {
+      simple.classList.add("hidden");
+      complete.classList.remove("hidden");
+      document.querySelector('.tab[data-tab="complete"]')?.classList.add("active");
+    } else {
+      complete.classList.add("hidden");
+      simple.classList.remove("hidden");
+      document.querySelector('.tab[data-tab="simple"]')?.classList.add("active");
+    }
+  }
 
-    // tabs: mostrar/ocultar secciones si tienes .tab y data-tab
-    const tabs = $$(".tab");
-    const sections = {
-      simple: $("#tab-simple"),
-      complete: $("#tab-complete"),
-    };
+  function wireTabs() {
+    const tabs = document.querySelectorAll(".tab");
     tabs.forEach(btn => {
       btn.addEventListener("click", (e) => {
         e.preventDefault();
-        tabs.forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
         const t = btn.getAttribute("data-tab");
-        if (t === "simple") {
-          sections.simple?.classList.remove("hidden");
-          sections.complete?.classList.add("hidden");
-        } else {
-          sections.complete?.classList.remove("hidden");
-          sections.simple?.classList.add("hidden");
-        }
+        showTab(t === "complete" ? "complete" : "simple");
+        history.replaceState(null, "", t === "complete" ? "#complete" : "#simple");
       });
     });
+    if (location.hash === "#complete") showTab("complete");
+    else showTab("simple");
+  }
+
+  function main() {
+    wire("formSimple", "simpleResult", "btnClearSimple");
+    wire("formComplete", "completeResult", "btnClearComplete");
+    wireTabs();
+    if (!document.querySelector(".tab")) {
+      document.getElementById("tab-simple")?.classList.remove("hidden");
+      document.getElementById("tab-complete")?.classList.remove("hidden");
+    }
+    if (location.hash === "#complete") showTab("complete");
   }
 
   if (document.readyState === "loading") {
