@@ -1,11 +1,21 @@
+import sys
 import json
 from pathlib import Path
 from os import listdir
 
+# Try tomllib (Py>=3.11) / Usa tomllib (Py>=3.11)
+try:
+    import tomllib  # stdlib
+    _load_toml = lambda b: tomllib.loads(b)
+except Exception:
+    # Fallback to tomli / Recurso a tomli
+    import tomli
+    _load_toml = lambda b: tomli.loads(b)
+
 class LanguageDict(dict):
     """
-    Load all JSON language files from a folder
-    Carga todos los archivos JSON de idioma desde una carpeta
+    Load all TOML language files from a folder
+    Carga todos los archivos TOML de idioma desde una carpeta
     """
 
     def __init__(self, path=None):
@@ -19,20 +29,24 @@ class LanguageDict(dict):
             p = Path(path)
             lang_dir = p if p.is_absolute() else (base / p)
 
-        # Check if folder exists / Verifica si existe la carpeta
+        # Ensure folder exists / Verifica existencia de carpeta
         if not lang_dir.exists():
-            print(f"[WARN] Language folder not found / Carpeta de idioma no encontrada: {lang_dir}")
+            print(f"[WARN] Language folder not found / Carpeta no encontrada: {lang_dir}")
             super().__init__({})
             return
 
         data = {}
-        # Load each JSON file / Carga cada archivo JSON
+        # Load each TOML file / Carga cada archivo TOML
         for filename in listdir(lang_dir):
             file_path = lang_dir / filename
-            if file_path.suffix.lower() == ".json" and file_path.is_file():
+            ext = file_path.suffix.lower()
+            if ext in (".toml", ".tom") and file_path.is_file():
                 try:
-                    with file_path.open("r", encoding="utf-8") as f:
-                        data[file_path.stem] = json.load(f)
+                    raw = file_path.read_bytes()
+                    doc = _load_toml(raw)
+                    # Flatten 1-level tables if you store nested / Aplana un nivel si usas tablas
+                    # Aquí asumimos claves simples k=v / We assume simple k=v keys
+                    data[file_path.stem] = doc
                 except Exception as e:
                     print(f"[WARN] Cannot load / No se pudo cargar {file_path.name}: {e}")
 
@@ -42,7 +56,15 @@ class LanguageDict(dict):
         """
         Return translated text / Devuelve el texto traducido
         """
-        return self.get(lang_code, {}).get(key, default)
+        node = self.get(lang_code, {})
+        # Support nested keys "a.b.c" / Soporta claves anidadas "a.b.c"
+        cur = node
+        for part in key.split("."):
+            if isinstance(cur, dict) and part in cur:
+                cur = cur[part]
+            else:
+                return default
+        return cur if isinstance(cur, str) else default
 
     def available_languages(self):
         """
@@ -52,19 +74,18 @@ class LanguageDict(dict):
 
 def detect_browser_language(request) -> str:
     """
-    Detect browser language / Detecta el idioma del navegador
+    Detect browser language / Detecta idioma del navegador
     Example / Ejemplo: 'es-ES,es;q=0.9,en;q=0.8' → 'es'
     """
     header = request.headers.get("Accept-Language", "")
     if not header:
         return "en"
-
     lang = header.split(",")[0].split("-")[0].strip().lower()
-    return lang if lang else "en"
+    return lang or "en"
 
 LANG = LanguageDict(path="static/lang")
 
-# Print info / Imprime información
+# Info print / Mensaje informativo
 if LANG:
     print(f"[INFO] Loaded languages / Idiomas cargados: {', '.join(LANG.available_languages())}")
 else:
