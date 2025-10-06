@@ -1,6 +1,5 @@
 from __future__ import annotations
 import json
-import logging
 from pathlib import Path
 from os import getenv as get_env
 from dotenv import load_dotenv
@@ -26,31 +25,20 @@ app = Flask(
     static_folder="static",
     template_folder="templates",
 )
-# Sets up base logging for easier debugging in dev and prod
-# Configura el logging base para facilitar la depuración en dev y prod
 
-# Logging básico
-logging.basicConfig(level=logging.INFO)
-app.logger.setLevel(logging.INFO)
+# Detecta el idioma del navegador / Detect browser language
+@app.before_request
+def _set_lang():
+    LANG.detect_from_request(request, fallback="en")
 
-# i18n disponible en plantillas
-# Opción 1: objeto global (por compatibilidad)
-app.jinja_env.globals.update(lang=LANG)
-# Exposes the dynamic language helper directly to templates
-# Expone el asistente de idioma dinámico directamente a las plantillas
-
-# Opción 2: snapshot por request (recomendado: usar {{ t.* }} )
+# Inyecta el idioma actual en las plantillas / Inject current language into templates
 @app.context_processor
 def inject_lang():
-    # Provides a per-request snapshot so templates can dereference strings quickly
-    # Proporciona un snapshot por solicitud para que las plantillas resuelvan cadenas rápido
     return {"t": LANG.as_dict(), "lang_code": LANG.code}
 
+
 class NumLike:
-    """
-    Acepta int/float/str (con coma o punto) o dict {"value": ...}
-    y devuelve float estandarizado.
-    """
+    """Acepta int/float/str (con coma o punto) o dict {"value": ...} y devuelve float estandarizado."""
     __slots__ = ("value",)
 
     def __init__(self, value):
@@ -82,11 +70,7 @@ def _to_float_or_none(x):
 
 
 def _canonicalize_keys(d: dict) -> dict:
-    """
-    Normaliza nombres del frontend a los usados por el modelo:
-      - insolation_flux → insolation
-      - star_* → stellar_*
-    """
+    """Normaliza nombres del frontend a los usados por el modelo / Normalize frontend keys to model keys"""
     if not isinstance(d, dict):
         return {}
     out = {}
@@ -101,43 +85,19 @@ def _canonicalize_keys(d: dict) -> dict:
 
 
 def normalize_payload_dual_numeric(payload: dict) -> dict:
-    """
-    Convierte campos numéricos (10.5, "10,5" o {"value":10.5}) a float.
-    Ignora 'disposition' si viene del cliente.
-    """
-    # Ensures numeric fields are floats regardless of input representation
-    # Garantiza que los campos numéricos sean float sin importar su representación
+    """Convierte campos numéricos a float sin importar su formato / Converts numeric fields to float regardless of format"""
     numeric_fields = {
-        # Órbita / tránsito
-        "orbital_period",
-        "transit_epoch",
-        "transit_duration",
-        "transit_depth",
-        "transit_snr",
-        "impact_param",
-        "eccentricity",
-        "semi_major_axis",
-        # Planeta
-        "planet_radius",
-        "equilibrium_temp",
-        "insolation",  # (mapeado desde insolation_flux)
-        # Estrella
-        "stellar_radius",
-        "stellar_mass",
-        "stellar_temp",
-        "stellar_logg",
-        "stellar_metallicity",
-        "stellar_density",
+        "orbital_period", "transit_epoch", "transit_duration", "transit_depth",
+        "transit_snr", "impact_param", "eccentricity", "semi_major_axis",
+        "planet_radius", "equilibrium_temp", "insolation",
+        "stellar_radius", "stellar_mass", "stellar_temp",
+        "stellar_logg", "stellar_metallicity", "stellar_density",
     }
-
     clean = {}
     for k, v in (payload or {}).items():
         if k == "disposition":
             continue
-        if k in numeric_fields:
-            clean[k] = _to_float_or_none(v)
-        else:
-            clean[k] = v
+        clean[k] = _to_float_or_none(v) if k in numeric_fields else v
     return clean
 
 
@@ -151,44 +111,26 @@ def read_json_from_model(filename: str, default=None):
 
 
 def _make_entry_or_dict(payload: dict):
-    """
-    Intenta construir ExoplanetEntry; si no, devuelve dict para que el
-    modelo acepte dicts directamente.
-    """
-    # Tries common constructors to maximize compatibility with the model
-    # Prueba constructores comunes para maximizar compatibilidad con el modelo
-    # Caso 1: .from_dict
+    """Intenta construir ExoplanetEntry; si no, devuelve dict."""
     try:
         from_dict = getattr(ExoplanetEntry, "from_dict", None)
         if callable(from_dict):
             return ExoplanetEntry.from_dict(payload)
     except Exception:
         pass
-
-    # Caso 2: constructor con kwargs
     try:
-        return ExoplanetEntry(**payload)  # type: ignore[arg-type]
+        return ExoplanetEntry(**payload)
     except Exception:
         pass
-
-    # Caso 3: constructor con un solo dict
     try:
-        return ExoplanetEntry(payload)  # type: ignore[call-arg]
+        return ExoplanetEntry(payload)
     except Exception:
         pass
-
-    # Último recurso
     return payload
 
 
 def _coerce_model_output(out):
-    """
-    Convierte lo que devuelva el modelo a:
-      {"disposition": <str>, "confidence": <float opcional>}
-    Soporta str, dict, (label, prob), objetos con attrs, numpy types.
-    """
-    # Normalizes heterogeneous outputs into one JSON shape for the frontend
-    # Normaliza salidas heterogéneas en una estructura JSON única para el frontend
+    """Convierte la salida del modelo a un formato estándar / Converts model output to standard format"""
     try:
         import numpy as np
         np_types = (np.generic,)
@@ -250,8 +192,6 @@ def indexPage():
 
 @app.route("/data")
 def dataPage():
-    # Loads model metadata so the page can display columns and thresholds
-    # Carga metadatos del modelo para que la página muestre columnas y umbrales
     columns_used = read_json_from_model("columns_used.json", default=[])
     thresholds = read_json_from_model("thresholds.json", default={})
     return render_template("data.html", columns_used=columns_used, thresholds=thresholds)
@@ -273,25 +213,24 @@ def thresholdsPage():
 def endpoints():
     ep = {
         "indexPage": url_for("indexPage"),
-        # Se oculta calculateDisposition a petición: solo páginas navegables
         "precisionPage": url_for("precisionPage"),
         "dataPage": url_for("dataPage"),
         "thresholdsPage": url_for("thresholdsPage"),
     }
     return render_template("endpoints.html", endpoints_map=ep)
 
+
 REQUIRED_MIN_KEYS = {"orbital_period", "transit_duration", "transit_depth"}
+
 
 @app.route("/api/health")
 def health():
-    # Reports presence of model artifacts and current language for diagnostics
-    # Reporta presencia de artefactos del modelo e idioma actual para diagnóstico
     meta = {
         "has_model_pkl": (MODEL_DIR / "model_lgb.pkl").exists(),
         "has_columns": (MODEL_DIR / "columns_used.json").exists(),
         "has_thresholds": (MODEL_DIR / "thresholds.json").exists(),
         "has_metrics": (MODEL_DIR / "metrics.json").exists(),
-        "lang_loaded": getattr(LANG, "langs", []),
+        "lang_loaded": LANG.available_languages(),
         "lang_code": LANG.code,
     }
     return jsonify(meta), 200
@@ -299,12 +238,7 @@ def health():
 
 @app.route("/api/calculateDisposition", methods=["POST"])
 def calculateDisposition():
-    """
-    Recibe JSON con parámetros y devuelve:
-      {"disposition": "...", "confidence": opcional, "__received_keys__": [...]}
-    """
-    # Validates, normalizes, calls the model, and coerces output for the UI
-    # Valida, normaliza, llama al modelo y adapta la salida para la interfaz
+    """Recibe JSON con parámetros y devuelve la disposición estimada."""
     try:
         if not request.is_json:
             return jsonify(error="Content-Type must be application/json"), 400
@@ -313,51 +247,34 @@ def calculateDisposition():
         if not isinstance(raw, dict):
             return jsonify(error="Payload must be a JSON object"), 400
 
-        # 1) Normaliza números
         payload = normalize_payload_dual_numeric(raw)
-
-        # 2) Normaliza nombres
         payload = _canonicalize_keys(payload)
 
-        # 3) Validación mínima para evitar “predicción por defecto”
         present = {k for k in REQUIRED_MIN_KEYS if payload.get(k) is not None}
         if len(present) < 2:
             msg = "Insuficientes parámetros: envía al menos dos de orbital_period, transit_duration, transit_depth"
             return jsonify(error=msg), 400
 
-        app.logger.info(f"[calc] payload_in={payload}")
-
-        # 4) Construye entrada o usa dict
         entry_or_dict = _make_entry_or_dict(payload)
-
-        # 5) Llama al modelo
         out = None
         try:
-            out = model_calculateDisposition(entry_or_dict)  # objeto
+            out = model_calculateDisposition(entry_or_dict)
         except TypeError:
-            out = model_calculateDisposition(payload)        # dict
+            out = model_calculateDisposition(payload)
 
-        app.logger.info(f"[calc] model_raw={type(out).__name__} -> {out}")
-
-        # 6) Normaliza salida
         result = _coerce_model_output(out)
         result["__received_keys__"] = sorted([k for k in payload.keys() if payload[k] is not None])
-
-        app.logger.info(f"[calc] result={result}")
 
         if "disposition" in result:
             return jsonify(result), 200
 
-        return jsonify(error="Model returned unexpected result (after coercion)"), 500
+        return jsonify(error="Model returned unexpected result"), 500
 
     except Exception as e:
-        app.logger.exception("calc error")
         return jsonify(error=str(e)), 500
 
 
 if __name__ == "__main__":
-    # Reads runtime config from environment and starts the Flask server
-    # Lee configuración de ejecución del entorno e inicia el servidor Flask
     port = int(get_env("PORT", "2727"))
     debug = get_env("FLASK_DEBUG", "1") == "1"
     app.run(host="0.0.0.0", port=port, debug=debug)
