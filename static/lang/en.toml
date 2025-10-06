@@ -1,0 +1,70 @@
+[app]
+title = "Sidereus Space App Challenge"
+welcome = "Welcome to Sidereus Space App Challenge"
+subtitle = "Explore and predict exoplanet dispositions using artificial intelligence."
+
+[nav]
+home = "Home"
+data = "Data"
+precision = "Precision"
+thresholds = "Thresholds"
+endpoints = "Endpoints"
+
+[sections]
+prediction_title = "Exoplanet Disposition Prediction"
+simple_tab = "Simple Query"
+complete_tab = "Complete Query"
+simple_title = "Recommended Minimum Parameters"
+complete_title = "All Available Parameters"
+
+[buttons]
+calculate = "Calculate Disposition"
+clear_btn = "Clear"
+back_home = "← Back to Home"
+
+[messages]
+empty_fields = "Enter at least two parameters to perform the prediction."
+loading = "Calculating..."
+result_label = "Predicted Disposition"
+confidence = "Confidence"
+fields_used = "Fields used"
+error_prediction = "Prediction error"
+helper_missing = "You may leave some fields blank; the backend handles missing values."
+
+[parameters]
+orbital_period = "Orbital period (days)"
+transit_duration = "Transit duration (hours)"
+transit_depth = "Transit depth (ppm)"
+transit_epoch = "Transit epoch (BKJD)"
+transit_snr = "Transit SNR"
+impact_param = "Impact parameter (b)"
+planet_radius = "Planet radius (R⊕)"
+equilibrium_temp = "Equilibrium temperature (K)"
+insolation_flux = "Insolation flux (S⊕)"
+eccentricity = "Eccentricity (e)"
+semi_major_axis = "Semi-major axis (AU)"
+star_radius = "Stellar radius (R☉)"
+star_mass = "Stellar mass (M☉)"
+star_temp = "Stellar temperature (K)"
+star_logg = "Stellar surface gravity (log g)"
+stellar_metallicity = "Stellar metallicity [Fe/H]"
+stellar_density = "Stellar density (g cm⁻³)"
+
+[info]
+orbital_period = "Time it takes the planet to complete one orbit around its star, in days."
+transit_duration = "Total duration of the planet's transit across the star, in hours."
+transit_depth = "Fraction of starlight blocked during transit; indicates planet-to-star size ratio."
+transit_epoch = "Reference time of the observed transit (in BKJD days)."
+transit_snr = "Signal-to-noise ratio of the detected transit."
+impact_param = "Normalized minimum distance between the planet’s trajectory and the star’s center."
+planet_radius = "Planet radius in Earth radii (R⊕)."
+equilibrium_temp = "Estimated temperature of the planet assuming radiative equilibrium."
+insolation_flux = "Amount of starlight the planet receives relative to Earth (S⊕)."
+eccentricity = "Measure of how elliptical the orbit is (0 = circular)."
+semi_major_axis = "Average distance between the planet and its star, in astronomical units (AU)."
+star_radius = "Stellar radius in solar radii (R☉)."
+star_mass = "Stellar mass in solar masses (M☉)."
+star_temp = "Effective surface temperature of the star, in kelvin."
+star_logg = "Logarithmic surface gravity of the star, in cgs units."
+stellar_metallicity = "Relative abundance of iron compared to hydrogen ([Fe/H])."
+stellar_density = "Average density of the star in grams per cubic centimeter."

@@ -1,0 +1,70 @@
+[app]
+title = "Sidereus Space App Challenge"
+welcome = "Bienvenido a Sidereus Space App Challenge"
+subtitle = "Explora y predice la disposición de exoplanetas utilizando inteligencia artificial."
+
+[nav]
+home = "Inicio"
+data = "Datos"
+precision = "Precisión"
+thresholds = "Umbrales"
+endpoints = "Endpoints"
+
+[sections]
+prediction_title = "Predicción de disposición de exoplanetas"
+simple_tab = "Consulta simple"
+complete_tab = "Consulta completa"
+simple_title = "Parámetros mínimos recomendados"
+complete_title = "Todos los parámetros disponibles"
+
+[buttons]
+calculate = "Calcular disposición"
+clear_btn = "Limpiar"
+back_home = "← Volver al inicio"
+
+[messages]
+empty_fields = "Ingresa al menos dos parámetros para realizar la predicción."
+loading = "Calculando..."
+result_label = "Disposición predicha"
+confidence = "Confianza"
+fields_used = "Campos utilizados"
+error_prediction = "Error en la predicción"
+helper_missing = "Puedes dejar campos vacíos. El backend maneja faltantes con indicadores y valores por defecto."
+
+[parameters]
+orbital_period = "Periodo orbital (días)"
+transit_duration = "Duración del tránsito (horas)"
+transit_depth = "Profundidad del tránsito (ppm)"
+transit_epoch = "Época del tránsito (BKJD)"
+transit_snr = "Relación señal/ruido del tránsito"
+impact_param = "Parámetro de impacto (b)"
+planet_radius = "Radio planetario (R⊕)"
+equilibrium_temp = "Temperatura de equilibrio (K)"
+insolation_flux = "Flujo de insolación (S⊕)"
+eccentricity = "Excentricidad (e)"
+semi_major_axis = "Semieje mayor (UA)"
+star_radius = "Radio estelar (R☉)"
+star_mass = "Masa estelar (M☉)"
+star_temp = "Temperatura estelar (K)"
+star_logg = "Gravedad superficial estelar (log g)"
+stellar_metallicity = "Metallicidad estelar [Fe/H]"
+stellar_density = "Densidad estelar (g cm⁻³)"
+
+[info]
+orbital_period = "Tiempo que tarda el planeta en completar una órbita alrededor de su estrella, medido en días."
+transit_duration = "Duración total del tránsito del planeta frente a la estrella, en horas."
+transit_depth = "Fracción de luz estelar bloqueada durante el tránsito; indica el tamaño relativo del planeta respecto a su estrella."
+transit_epoch = "Instante de referencia del tránsito, expresado en días julianos basados en Kepler (BKJD)."
+transit_snr = "Relación señal/ruido del tránsito detectado."
+impact_param = "Distancia mínima normalizada entre el centro del disco estelar y la trayectoria del planeta durante el tránsito."
+planet_radius = "Radio del planeta expresado en radios terrestres (R⊕)."
+equilibrium_temp = "Temperatura estimada del planeta en equilibrio radiativo, en kelvin."
+insolation_flux = "Cantidad de radiación estelar recibida por el planeta, comparada con la Tierra (S⊕)."
+eccentricity = "Medida de cuán elíptica es la órbita del planeta (0 indica circular)."
+semi_major_axis = "Distancia promedio entre el planeta y su estrella, expresada en unidades astronómicas (UA)."
+star_radius = "Radio de la estrella en radios solares (R☉)."
+star_mass = "Masa de la estrella en masas solares (M☉)."
+star_temp = "Temperatura efectiva de la superficie estelar, en kelvin."
+star_logg = "Gravedad superficial estelar en escala logarítmica (cm/s²)."
+stellar_metallicity = "Abundancia relativa de hierro respecto al hidrógeno, comparada con el Sol ([Fe/H])."
+stellar_density = "Densidad promedio de la estrella en gramos por centímetro cúbico."
