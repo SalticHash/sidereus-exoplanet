@@ -3,14 +3,31 @@ Sidereus emplea algoritmos de machine learning, basados en LightGBM, una herrami
 ## Acerca del Desafío 
 Este proyecto es nuestra solución al desafío "A World Away: Hunting for Exoplanets With IA" del NASA Space App Challenge Costa Rica 2025. 
 [Enlace oficial de la competencia](https://www.spaceappschallenge.org/2025/challenges/a-world-away-hunting-for-exoplanets-with-ai/)
+
 ## Nuestra Solución 
 ...
-## Recursos Empleados 
-...
+
+## Recursos Empleados  
+Para la aplicación completa usamos el lenguaje de programación **Python**, el cual nos da flexibilidad de uso al ser interpretado y tener una gran variedad de **librerías de código abierto** fáciles de usar.  
+
+Usamos **estructuras de datos** para almacenar y analizar los datos de manera mucho más dinámica, evitando el *hardcode*, que es cuando los parámetros se implementan de forma estática y difícil de modificar.  
+
+También usamos varias librerías de Python como **NumPy** y **LightGBM**, además de **Flask** para el backend de nuestra aplicación, el cual maneja la lógica del servidor, abriendo puntos de acceso para obtener información del modelo. Este mismo se encarga de dar acceso a la interfaz de usuario, facilitando el uso de la aplicación.  
+
+Para la **interfaz de usuario**, utilizamos **HTML**, **CSS** y **JavaScript**, lo que brinda un acceso simple y organizado a la aplicación.  
+
+Para el **entrenamiento de nuestro modelo de inteligencia artificial**, usamos las bases de datos que la NASA ha brindado sobre exoplanetas, como los **objetos de interés de Kepler y TESS (KOI y TOI)**, así como los datos de **K2**.  
+
+También nos apoyamos en el uso responsable de **inteligencias artificiales** como ChatGPT para completar tareas tediosas, como la generación de estructuras de datos para los exoplanetas, así como para ayudar en la depuración de errores desconocidos, ya que este fue un reto nuevo para todo el equipo. 
+
 ## Alcance Potencial 
-...
+Implementamos una aplicación de reconocimiento de exoplanetas basada en datos de satélite que es **simple e intuitiva** de usar, brindando una experiencia agradable y educativa para los entusiastas del espacio.  
+
+También decidimos usar **GitHub** para que nuestra aplicación fuera de **código abierto**, permitiendo que cualquier persona interesada en innovar con una aplicación similar pueda hacerlo, o incluso colaborar directamente con este proyecto.  
+
 ## Innovación
-...
+Nuestra aplicación implementa la detección de exoplanetas de una forma **sencilla y accesible** para los usuarios. Además, expone **puntos de acceso (API)** que permiten a cualquier persona utilizar el modelo y sus predicciones, así como **clonar el repositorio** para colaborar o crear sus propias aplicaciones de detección de exoplanetas.  
+
 ## Nuestro Equipo 
 Está conformado por 3 personas, trabajando en conjunto pero con una división de trabajos clara, definida previa al comienzo del desafío, para una vez este hubiera comenzado, poder aprovechar el tiempo de manera sensta y llevar el proyecto al mayor grado de culminación posible: 
 - Mathias Rojas Valverde: Estudiante del Colegio Científico de Costa Rica, sede San Carlos. Responsable del modelado y creación del algoritmo de aprendizaje automático.
