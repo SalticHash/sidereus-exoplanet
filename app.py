@@ -34,8 +34,10 @@ def _set_lang():
 # Inyecta el idioma actual en las plantillas / Inject current language into templates
 @app.context_processor
 def inject_lang():
-    return {"t": LANG.as_dict(), "lang_code": LANG.code}
-
+    all_langs = LANG.as_dict()
+    cur = all_langs.get(LANG.code, next(iter(all_langs.values()), {}))
+    # t = idioma actual, T = todos los idiomas (por si lo necesitas)
+    return {"t": cur, "T": all_langs, "lang_code": LANG.code}
 
 class NumLike:
     """Acepta int/float/str (con coma o punto) o dict {"value": ...} y devuelve float estandarizado."""
