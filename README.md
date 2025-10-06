@@ -5,43 +5,7 @@ Este proyecto es nuestra solución al desafío "A World Away: Hunting for Exopla
 [Enlace oficial de la competencia](https://www.spaceappschallenge.org/2025/challenges/a-world-away-hunting-for-exoplanets-with-ai/)
 
 ## Nuestra Solución 
-Sidereus-Exoplanet Finder es una aplicación web desarrollada con Flask que utiliza un modelo de aprendizaje automático basado en LightGBM para analizar datos astronómicos de misiones de la NASA como Kepler, TESS y K2, con el objetivo de clasificar candidatos a exoplanetas como reales, falsos o ambiguos según parámetros como el período orbital, la profundidad del tránsito y las características estelares. La aplicación ofrece una interfaz intuitiva donde los usuarios pueden ingresar datos, visualizar predicciones y explorar métricas del modelo, mientras que el backend gestiona las solicitudes, normaliza los datos de entrada y devuelve los resultados en formato JSON, adaptando automáticamente el idioma de la interfaz al del navegador del usuario. Para ejecutarla localmente, se debe clonar el repositorio y correr el proyecto dentro de un entorno virtual de Python (venv) para aislar correctamente las dependencias; una vez activado el entorno, se instalan las librerías necesarias indicadas en el archivo de requisitos y se inicia el servidor Flask para acceder a la aplicación desde una dirección local. En esencia, Sidereus funciona como una herramienta tanto educativa como científica que demuestra cómo la inteligencia artificial puede asistir en la detección y clasificación de exoplanetas, haciendo que el análisis astronómico avanzado sea accesible para estudiantes, investigadores y entusiastas del espacio.
-
-Como correrlo paso a paso:
-Requisitos previos: Tener instalado Python 3.11+ (3.12 funciona), pip y Git (opcional). Sitúate en la carpeta raíz del proyecto (donde están app.py y requirements.txt).
-
-Windows
-
-Crea el entorno: python -m venv venv
-Actívalo: venv\Scripts\activate
-(Opcional) Actualiza pip: python -m pip install --upgrade pip
-Instala dependencias: pip install -r requirements.txt
-Ejecuta la app: python app.py y abre http://127.0.0.1:2727/
-
-Linux
-
-Crea el entorno: python3 -m venv venv
-Actívalo: source venv/bin/activate
-(Opcional) Actualiza pip: python -m pip install --upgrade pip
-Instala dependencias: pip install -r requirements.txt
-Ejecuta la app: python app.py y abre http://127.0.0.1:2727/
-
-macOS
-
-Crea el entorno: python3 -m venv venv
-Actívalo: source venv/bin/activate
-(Opcional) Actualiza pip: python -m pip install --upgrade pip
-Instala dependencias: pip install -r requirements.txt
-• Nota macOS/Apple Silicon: si LightGBM da error de compilación, instala OpenMP con Homebrew (brew install libomp) y vuelve a pip install lightgbm.
-Ejecuta la app: python app.py y abre http://127.0.0.1:2727/
-
-Consejos rápidos:
-
-Para cambiar el puerto: define PORT (Windows: set PORT=3000; Linux/macOS: export PORT=3000) antes de ejecutar python app.py.
-Para desactivar modo debug: define FLASK_DEBUG=0.
-El endpoint de predicción es /api/calculateDisposition (requiere al menos dos de: orbital_period, transit_duration, transit_depth).
-Si quieres predicciones reales, coloca los artefactos del modelo en la carpeta model/ con los nombres que el servidor espera (model_lgb.pkl, columns_used.json, thresholds.json, metrics.json). Sin ellos, la interfaz carga pero no habrá inferencia.
-
+**Sidereus-Exoplanet Finder** es una aplicación web desarrollada con Flask que utiliza un modelo de aprendizaje automático basado en LightGBM para analizar datos astronómicos de misiones de la NASA como Kepler, TESS y K2, con el objetivo de clasificar candidatos a exoplanetas como reales, falsos o ambiguos según parámetros como el período orbital, la profundidad del tránsito y las características estelares. La aplicación ofrece una interfaz intuitiva donde los usuarios pueden ingresar datos, visualizar predicciones y explorar métricas del modelo, mientras que el backend gestiona las solicitudes, normaliza los datos de entrada y devuelve los resultados en formato JSON, adaptando automáticamente el idioma de la interfaz al del navegador del usuario. Actualmente, el modelo puede probarse en el enlace [https://sidereus-exoplanet.onrender.com](https://sidereus-exoplanet.onrender.com); sin embargo, al ejecutarse en Render, una plataforma de terceros, puede presentar errores o demoras ocasionales, ya que la aplicación se encuentra en fase experimental. Alternativamente, el proyecto puede ejecutarse localmente clonando el repositorio, creando un entorno virtual de Python (venv), instalando las dependencias listadas en el archivo requirements.txt y ejecutando el servidor Flask con el comando `python app.py`, accediendo luego a la dirección [http://127.0.0.1:2727/](http://127.0.0.1:2727/). Para hacerlo paso a paso: en **Windows**, crea el entorno con `python -m venv venv`, actívalo con `venv\Scripts\activate`, opcionalmente actualiza pip con `python -m pip install --upgrade pip`, instala las dependencias con `pip install -r requirements.txt` y ejecuta la aplicación con `python app.py`. En **Linux**, crea el entorno con `python3 -m venv venv`, actívalo con `source venv/bin/activate`, actualiza pip con `python -m pip install --upgrade pip`, instala las dependencias con `pip install -r requirements.txt` y ejecuta la aplicación con `python app.py`. En **macOS**, el proceso es similar: crea el entorno con `python3 -m venv venv`, actívalo con `source venv/bin/activate`, actualiza pip con `python -m pip install --upgrade pip`, instala las dependencias con `pip install -r requirements.txt` y, si LightGBM genera un error de compilación, instala OpenMP con `brew install libomp` y vuelve a ejecutar `pip install lightgbm`, antes de iniciar la aplicación con `python app.py`. El acceso local se realiza abriendo el enlace [http://127.0.0.1:2727/](http://127.0.0.1:2727/). Para cambiar el puerto de ejecución puede definirse la variable de entorno `PORT` (en Windows: `set PORT=3000`; en Linux o macOS: `export PORT=3000`), y para desactivar el modo debug se puede definir `FLASK_DEBUG=0`. El endpoint principal de predicción es `/api/calculateDisposition`, que requiere al menos dos de los siguientes parámetros: orbital_period, transit_duration o transit_depth. Para realizar predicciones reales, es necesario colocar los archivos del modelo en la carpeta `model/` con los nombres esperados (`model_lgb.pkl`, `columns_used.json`, `thresholds.json` y `metrics.json`), de lo contrario la interfaz cargará pero no habrá inferencia. En esencia, Sidereus funciona como una herramienta tanto educativa como científica que demuestra cómo la inteligencia artificial puede asistir en la detección y clasificación de exoplanetas, haciendo que el análisis astronómico avanzado sea accesible para estudiantes, investigadores y entusiastas del espacio.
 
 ## Recursos Empleados  
 Para la aplicación completa usamos el lenguaje de programación **Python**, el cual nos da flexibilidad de uso al ser interpretado y tener una gran variedad de **librerías de código abierto** fáciles de usar.  
@@ -81,43 +45,7 @@ This project is our solution to the NASA Space App Challenge Costa Rica 2025 "A 
 [Official competition link](https://www.spaceappschallenge.org/2025/challenges/a-world-away-hunting-for-exoplanets-with-ai/)
 
 ## Our Solution 
-Sidereus-Exoplanet Finder is a web application built with Flask that uses a LightGBM-based machine learning model to analyze astronomical data from NASA missions such as Kepler, TESS, and K2, aiming to classify exoplanet candidates as real, false, or ambiguous based on parameters like orbital period, transit depth, and stellar characteristics. The app provides an intuitive interface where users can enter data, visualize predictions, and explore model metrics, while the backend handles requests, normalizes the inputs, and returns results in JSON format, automatically adapting the interface language to the user’s browser. To run it locally, the repository must be cloned and executed within a Python virtual environment (venv) to properly isolate dependencies; once the environment is activated, the required libraries listed in the requirements file can be installed, and the Flask server started to access the app through a local address. In essence, Sidereus serves as both an educational and scientific tool that illustrates how artificial intelligence can assist in the detection and classification of exoplanets, making advanced astronomical analysis accessible to students, researchers, and enthusiasts alike.
-
-How to run it step by step:
-Prerequisites: Have Python 3.11+ installed (3.12 works as well), along with pip and optionally Git. Make sure you are in the root folder of the project (where app.py and requirements.txt are located).
-
-Windows
-
-Create the environment: python -m venv venv
-Activate it: venv\Scripts\activate
-(Optional) Update pip: python -m pip install --upgrade pip
-Install dependencies: pip install -r requirements.txt
-Run the app: python app.py and open http://127.0.0.1:2727/
-
-Linux
-
-Create the environment: python3 -m venv venv
-Activate it: source venv/bin/activate
-(Optional) Update pip: python -m pip install --upgrade pip
-Install dependencies: pip install -r requirements.txt
-Run the app: python app.py and open http://127.0.0.1:2727/
-
-macOS
-
-Create the environment: python3 -m venv venv
-Activate it: source venv/bin/activate
-(Optional) Update pip: python -m pip install --upgrade pip
-Install dependencies: pip install -r requirements.txt
-• Note for macOS/Apple Silicon: if LightGBM fails to compile, install OpenMP with Homebrew (brew install libomp) and then run pip install lightgbm again.
-Run the app: python app.py and open http://127.0.0.1:2727/
-
-Quick Tips:
-
-To change the port: define PORT (Windows: set PORT=3000; Linux/macOS: export PORT=3000) before running python app.py.
-To disable debug mode: set FLASK_DEBUG=0.
-The prediction endpoint is /api/calculateDisposition (requires at least two of: orbital_period, transit_duration, transit_depth).
-If you want real predictions, place the model artifacts inside the model/ folder with the expected filenames (model_lgb.pkl, columns_used.json, thresholds.json, metrics.json). Without them, the interface will load but no inference will occur.
-
+**Sidereus-Exoplanet Finder** is a web application built with Flask that uses a LightGBM-based machine learning model to analyze astronomical data from NASA missions such as Kepler, TESS, and K2, aiming to classify exoplanet candidates as confirmed, false, or ambiguous based on parameters like orbital period, transit depth, and stellar characteristics. The app provides an intuitive interface for users to input data, visualize predictions, and explore model metrics, while the backend handles requests, normalizes input data, and returns results in JSON format, automatically adapting the interface language to the user’s browser. The model can be tested at [https://sidereus-exoplanet.onrender.com](https://sidereus-exoplanet.onrender.com); however, since it runs on Render, a third-party platform, occasional errors or delays may occur as the app remains in an experimental phase. Alternatively, the project can be run locally by cloning the repository, creating a Python virtual environment (venv), installing the dependencies listed in requirements.txt, and launching the Flask server with `python app.py`, then accessing it at [http://127.0.0.1:2727/](http://127.0.0.1:2727/). To do this step by step: on **Windows**, create the environment with `python -m venv venv`, activate it with `venv\Scripts\activate`, optionally update pip with `python -m pip install --upgrade pip`, install dependencies using `pip install -r requirements.txt`, and run the app with `python app.py`. On **Linux**, create the environment with `python3 -m venv venv`, activate it with `source venv/bin/activate`, update pip with `python -m pip install --upgrade pip`, install dependencies with `pip install -r requirements.txt`, and run the app with `python app.py`. On **macOS**, the process is similar: create the environment with `python3 -m venv venv`, activate it with `source venv/bin/activate`, update pip with `python -m pip install --upgrade pip`, install dependencies with `pip install -r requirements.txt`, and if LightGBM fails to build, install OpenMP using `brew install libomp` and reinstall LightGBM with `pip install lightgbm` before running `python app.py`. The local server can be accessed at [http://127.0.0.1:2727/](http://127.0.0.1:2727/). To change the port, define the environment variable `PORT` (Windows: `set PORT=3000`; Linux/macOS: `export PORT=3000`), and to disable debug mode, define `FLASK_DEBUG=0`. The main prediction endpoint is `/api/calculateDisposition`, which requires at least two of the following parameters: orbital_period, transit_duration, or transit_depth. To enable real predictions, the model files must be placed in the `model/` directory with the expected names (`model_lgb.pkl`, `columns_used.json`, `thresholds.json`, and `metrics.json`); otherwise, the interface will load but no inference will be performed. In essence, Sidereus serves as both an educational and scientific tool that demonstrates how artificial intelligence can assist in exoplanet detection and classification, making advanced astronomical analysis accessible to students, researchers, and space enthusiasts.
 
 ## Resources used
 For the complete application, we used the **Python** programming language, which provides flexibility as an interpreted language and offers a wide range of **open-source libraries** that are easy to use.  
