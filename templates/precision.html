@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2 class="section-title">Métricas del modelo</h2>
+
+<div class="card">
+  {% if metrics and metrics.__error__ is not defined %}
+    <div class="kpi">
+      {% if metrics.auc is defined %}
+        <div class="item">
+          <div class="value">{{ "%.4f"|format(metrics.auc) }}</div>
+          <div class="label">AUC</div>
+        </div>
+      {% endif %}
+      {% if metrics.avg_precision is defined %}
+        <div class="item">
+          <div class="value">{{ "%.4f"|format(metrics.avg_precision) }}</div>
+          <div class="label">Average Precision</div>
+        </div>
+      {% endif %}
+      {% if metrics.val_size is defined %}
+        <div class="item">
+          <div class="value">{{ metrics.val_size }}</div>
+          <div class="label">Validación (muestras)</div>
+        </div>
+      {% endif %}
+    </div>
+
+    <hr>
+
+    <h3 class="section-title">Resumen JSON</h3>
+    <table class="table">
+      <thead><tr><th>Clave</th><th>Valor</th></tr></thead>
+      <tbody>
+        {% for k, v in metrics.items() %}
+          <tr>
+            <td><code>{{ k }}</code></td>
+            <td><code>{{ v }}</code></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  {% else %}
+    <p class="muted">
+      No se pudo leer <code>model/metrics.json</code>.
+      {% if metrics.__error__ %} Error: <code>{{ metrics.__error__ }}</code>{% endif %}
+    </p>
+  {% endif %}
+</div>
+
+{% endblock %}

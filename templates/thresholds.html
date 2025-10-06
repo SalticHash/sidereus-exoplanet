@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2 class="section-title">Thresholds</h2>
+
+<div class="card">
+  {% if thresholds and thresholds.__error__ is not defined %}
+    <table class="table">
+      <thead><tr><th>Clave</th><th>Valor</th></tr></thead>
+      <tbody>
+        {% for k, v in thresholds.items() %}
+          <tr>
+            <td><code>{{ k }}</code></td>
+            <td><code>{{ v }}</code></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="muted">
+      No se pudo leer <code>model/thresholds.json</code>.
+      {% if thresholds.__error__ %} Error: <code>{{ thresholds.__error__ }}</code>{% endif %}
+    </p>
+  {% endif %}
+</div>
+
+{% endblock %}

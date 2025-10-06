@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="{{ lang_code|default('es') }}">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{{ t.app.title }}</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css', v='5') }}">
+</head>
+<body>
+  <div class="top-actions">
+    <a class="btn ghost" href="{{ url_for('indexPage') }}" id="btnHome" title="{{ t.nav.home }}">{{ t.nav.home }}</a>
+    <a class="btn ghost" href="{{ url_for('dataPage') }}" id="btnData" title="{{ t.nav.data }}">{{ t.nav.data }}</a>
+    <a class="btn ghost" href="{{ url_for('precisionPage') }}" id="btnPrecision" title="{{ t.nav.precision }}">{{ t.nav.precision }}</a>
+    <a class="btn primary" href="{{ url_for('endpoints') }}" id="btnEndpoints" title="{{ t.nav.endpoints }}">{{ t.nav.endpoints }}</a>
+  </div>
+
+  <div class="container">
+    {% block content %}{% endblock %}
+  </div>
+
+  <div id="toastContainer" class="toast-container"></div>
+
+<script>
+  window.ENDPOINTS = {
+    CALCULATE: "{{ url_for('calculateDisposition') }}",
+    METRICS: "{{ url_for('precisionPage') }}",
+    THRESHOLDS: "{{ url_for('thresholdsPage') }}",
+    ENDPOINTS: "{{ url_for('endpoints') }}",
+    DATA: "{{ url_for('dataPage') }}",
+    PRECISION: "{{ url_for('precisionPage') }}"
+  };
+</script>
+
+<script id="i18n-data" type="application/json">
+{{ t | tojson }}
+</script>
+<script>
+  window.I18N = JSON.parse(document.getElementById('i18n-data').textContent);
+</script>
+
+<script src="{{ url_for('static', filename='js/app.js', v='3') }}"></script>
+</body>
+</html>
+

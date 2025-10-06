@@ -1,0 +1,8 @@
+{% extends "layout.html" %}
+{% block title %}Error — Sidereus{% endblock %}
+{% block content %}
+  <div class="card">
+    <h2 style="margin-bottom: .75rem;">{{ req.statuscode }}</h2>
+    <p>{{ req.text }}</p>
+  </div>
+{% endblock %}

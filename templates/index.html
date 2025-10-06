@@ -1,0 +1,240 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<div class="welcome-box">
+  <h1>{{ t.app.welcome }}</h1>
+  <p class="subtitle">{{ t.app.subtitle }}</p>
+</div>
+
+<div class="consultas-container">
+
+  <h2 class="section-title">{{ t.sections.prediction_title }}</h2>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="simple">{{ t.sections.simple_tab }}</button>
+    <button class="tab" data-tab="complete">{{ t.sections.complete_tab }}</button>
+  </div>
+
+  <section id="simpleForm" class="tab-content active">
+    <div class="card">
+      <h2 class="section-title">{{ t.sections.simple_title }}</h2>
+
+      <form id="formSimple" autocomplete="off">
+        <div class="form-grid">
+
+          <div class="form-item">
+            <label class="label" for="s_orbital_period">
+              {{ t.parameters.orbital_period }}
+              <button type="button" class="info-btn" data-info="{{ t.info.orbital_period }}">ℹ️</button>
+            </label>
+            <input id="s_orbital_period" class="input" type="text" placeholder="e.g. 10.5">
+          </div>
+
+          <div class="form-item">
+            <label class="label" for="s_transit_duration">
+              {{ t.parameters.transit_duration }}
+              <button type="button" class="info-btn" data-info="{{ t.info.transit_duration }}">ℹ️</button>
+            </label>
+            <input id="s_transit_duration" class="input" type="text" placeholder="e.g. 2.5">
+          </div>
+
+          <div class="form-item">
+            <label class="label" for="s_transit_depth">
+              {{ t.parameters.transit_depth }}
+              <button type="button" class="info-btn" data-info="{{ t.info.transit_depth }}">ℹ️</button>
+            </label>
+            <input id="s_transit_depth" class="input" type="text" placeholder="e.g. 500">
+          </div>
+
+          <div class="form-item">
+            <label class="label" for="s_planet_radius">
+              {{ t.parameters.planet_radius }}
+              <button type="button" class="info-btn" data-info="{{ t.info.planet_radius }}">ℹ️</button>
+            </label>
+            <input id="s_planet_radius" class="input" type="text" placeholder="e.g. 1.5">
+          </div>
+
+          <div class="form-item">
+            <label class="label" for="s_equilibrium_temp">
+              {{ t.parameters.equilibrium_temp }}
+              <button type="button" class="info-btn" data-info="{{ t.info.equilibrium_temp }}">ℹ️</button>
+            </label>
+            <input id="s_equilibrium_temp" class="input" type="text" placeholder="e.g. 800">
+          </div>
+
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn primary">
+            {{ t.buttons.calculate }} <span class="loader hidden"></span>
+          </button>
+          <button type="button" id="btnClearSimple" class="btn ghost">{{ t.buttons.clear }}</button>
+        </div>
+      </form>
+
+      <div id="simpleResult" class="hidden"></div>
+    </div>
+  </section>
+
+  <section id="completeForm" class="tab-content">
+    <div class="card">
+      <h2 class="section-title">{{ t.sections.complete_title }}</h2>
+
+      <form id="formComplete" autocomplete="off">
+        <div class="form-grid">
+
+          <div class="form-item">
+            <label class="label" for="c_orbital_period">
+              {{ t.parameters.orbital_period }}
+              <button type="button" class="info-btn" data-info="{{ t.info.orbital_period }}">ℹ️</button>
+            </label>
+            <input id="c_orbital_period" class="input" type="text" placeholder="e.g. 12.4">
+          </div>
+
+          <div class="form-item">
+            <label class="label" for="c_transit_epoch">
+              {{ t.parameters.transit_epoch }}
+              <button type="button" class="info-btn" data-info="{{ t.info.transit_epoch }}">ℹ️</button>
+            </label>
+            <input id="c_transit_epoch" class="input" type="text" placeholder="e.g. 134.123">
+          </div>
+
+          <div class="form-item">
+            <label class="label" for="c_transit_duration">
+              {{ t.parameters.transit_duration }}
+              <button type="button" class="info-btn" data-info="{{ t.info.transit_duration }}">ℹ️</button>
+            </label>
+            <input id="c_transit_duration" class="input" type="text" placeholder="e.g. 3.5">
+          </div>
+
+          <div class="form-item">
+            <label class="label" for="c_transit_depth">
+              {{ t.parameters.transit_depth }}
+              <button type="button" class="info-btn" data-info="{{ t.info.transit_depth }}">ℹ️</button>
+            </label>
+            <input id="c_transit_depth" class="input" type="text" placeholder="e.g. 450">
+          </div>
+
+          <div class="form-item">
+            <label class="label" for="c_transit_snr">
+              {{ t.parameters.transit_snr }}
+              <button type="button" class="info-btn" data-info="{{ t.info.transit_snr }}">ℹ️</button>
+            </label>
+            <input id="c_transit_snr" class="input" type="text" placeholder="optional">
+          </div>
+
+          <div class="form-item">
+            <label class="label" for="c_impact_param">
+              {{ t.parameters.impact_param }}
+              <button type="button" class="info-btn" data-info="{{ t.info.impact_param }}">ℹ️</button>
+            </label>
+            <input id="c_impact_param" class="input" type="text" placeholder="optional">
+          </div>
+
+          <div class="form-item">
+            <label class="label" for="c_planet_radius">
+              {{ t.parameters.planet_radius }}
+              <button type="button" class="info-btn" data-info="{{ t.info.planet_radius }}">ℹ️</button>
+            </label>
+            <input id="c_planet_radius" class="input" type="text" placeholder="e.g. 1.2">
+          </div>
+
+          <div class="form-item">
+            <label class="label" for="c_equilibrium_temp">
+              {{ t.parameters.equilibrium_temp }}
+              <button type="button" class="info-btn" data-info="{{ t.info.equilibrium_temp }}">ℹ️</button>
+            </label>
+            <input id="c_equilibrium_temp" class="input" type="text" placeholder="e.g. 900">
+          </div>
+
+          <div class="form-item">
+            <label class="label" for="c_insolation_flux">
+              {{ t.parameters.insolation_flux }}
+              <button type="button" class="info-btn" data-info="{{ t.info.insolation_flux }}">ℹ️</button>
+            </label>
+            <input id="c_insolation_flux" class="input" type="text" placeholder="e.g. 1.2">
+          </div>
+
+          <div class="form-item">
+            <label class="label" for="c_eccentricity">
+              {{ t.parameters.eccentricity }}
+              <button type="button" class="info-btn" data-info="{{ t.info.eccentricity }}">ℹ️</button>
+            </label>
+            <input id="c_eccentricity" class="input" type="text" placeholder="optional">
+          </div>
+
+          <div class="form-item">
+            <label class="label" for="c_semi_major_axis">
+              {{ t.parameters.semi_major_axis }}
+              <button type="button" class="info-btn" data-info="{{ t.info.semi_major_axis }}">ℹ️</button>
+            </label>
+            <input id="c_semi_major_axis" class="input" type="text" placeholder="optional">
+          </div>
+
+          <div class="form-item">
+            <label class="label" for="c_star_radius">
+              {{ t.parameters.star_radius }}
+              <button type="button" class="info-btn" data-info="{{ t.info.star_radius }}">ℹ️</button>
+            </label>
+            <input id="c_star_radius" class="input" type="text" placeholder="e.g. 1.0">
+          </div>
+
+          <div class="form-item">
+            <label class="label" for="c_star_mass">
+              {{ t.parameters.star_mass }}
+              <button type="button" class="info-btn" data-info="{{ t.info.star_mass }}">ℹ️</button>
+            </label>
+            <input id="c_star_mass" class="input" type="text" placeholder="e.g. 1.02">
+          </div>
+
+          <div class="form-item">
+            <label class="label" for="c_star_temp">
+              {{ t.parameters.star_temp }}
+              <button type="button" class="info-btn" data-info="{{ t.info.star_temp }}">ℹ️</button>
+            </label>
+            <input id="c_star_temp" class="input" type="text" placeholder="e.g. 5600">
+          </div>
+
+          <div class="form-item">
+            <label class="label" for="c_star_logg">
+              {{ t.parameters.star_logg }}
+              <button type="button" class="info-btn" data-info="{{ t.info.star_logg }}">ℹ️</button>
+            </label>
+            <input id="c_star_logg" class="input" type="text" placeholder="e.g. 4.4">
+          </div>
+
+          <div class="form-item">
+            <label class="label" for="c_stellar_metallicity">
+              {{ t.parameters.stellar_metallicity }}
+              <button type="button" class="info-btn" data-info="{{ t.info.stellar_metallicity }}">ℹ️</button>
+            </label>
+            <input id="c_stellar_metallicity" class="input" type="text" placeholder="optional">
+          </div>
+
+          <div class="form-item">
+            <label class="label" for="c_stellar_density">
+              {{ t.parameters.stellar_density }}
+              <button type="button" class="info-btn" data-info="{{ t.info.stellar_density }}">ℹ️</button>
+            </label>
+            <input id="c_stellar_density" class="input" type="text" placeholder="optional">
+          </div>
+
+          <div class="form-item w-12">
+            <p class="helper">{{ t.messages.helper_missing|default("You may leave some fields blank; the backend handles missing values.") }}</p>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn primary">
+            {{ t.buttons.calculate }} <span class="loader hidden"></span>
+          </button>
+          <button type="button" id="btnClearComplete" class="btn ghost">{{ t.buttons.clear }}</button>
+        </div>
+      </form>
+
+      <div id="completeResult" class="hidden"></div>
+    </div>
+  </section>
+</div>
+
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2 class="section-title">Dataset & Features usados por el modelo</h2>
+
+<div class="card">
+  <h3 class="section-title">Columns used</h3>
+
+  {% if columns_used and columns_used.__error__ is not defined %}
+    <table class="table">
+      <thead>
+        <tr><th>#</th><th>Feature</th></tr>
+      </thead>
+      <tbody>
+        {% for col in columns_used %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td><code>{{ col }}</code></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="muted">
+      No se pudo leer <code>model/columns_used.json</code>.
+      {% if columns_used.__error__ %} Error: <code>{{ columns_used.__error__ }}</code>{% endif %}
+    </p>
+  {% endif %}
+</div>
+
+<div class="card" style="margin-top:16px;">
+  <h3 class="section-title">Thresholds (reglas de decisión)</h3>
+
+  {% if thresholds and thresholds.__error__ is not defined %}
+    <table class="table">
+      <thead>
+        <tr><th>Clave</th><th>Valor</th></tr>
+      </thead>
+      <tbody>
+        {% for k, v in thresholds.items() %}
+          <tr>
+            <td><code>{{ k }}</code></td>
+            <td><code>{{ v }}</code></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p class="helper">
+      Ejemplo: si <code>p ≥ tau_high</code> ⇒ <strong>CANDIDATE</strong>,
+      si <code>p ≤ tau_low</code> ⇒ <strong>FALSE_POSITIVE</strong>, de lo contrario ⇒ <strong>AMBIGUOUS_CANDIDATE</strong>.
+    </p>
+  {% else %}
+    <p class="muted">
+      No se pudo leer <code>model/thresholds.json</code>.
+      {% if thresholds.__error__ %} Error: <code>{{ thresholds.__error__ }}</code>{% endif %}
+    </p>
+  {% endif %}
+</div>
+
+{% endblock %}

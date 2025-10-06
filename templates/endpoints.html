@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2 class="section-title">Endpoints disponibles</h2>
+
+<div class="card">
+  {% if endpoints_map %}
+    <table class="table">
+      <thead>
+        <tr><th>Endpoint</th><th>Ruta</th></tr>
+      </thead>
+      <tbody>
+        {% for name, url in endpoints_map.items() %}
+          <tr>
+            <td><code>{{ name }}</code></td>
+            <td><a href="{{ url }}"><code>{{ url }}</code></a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p class="helper">Las rutas se generan con <code>url_for</code> para evitar errores de construcción.</p>
+  {% else %}
+    <p class="muted">No hay endpoints registrados para mostrar.</p>
+  {% endif %}
+</div>
+
+{% endblock %}
