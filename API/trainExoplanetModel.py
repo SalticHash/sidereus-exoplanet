@@ -1,3 +1,5 @@
+# Usage: python -m API.trainExoplanetModel
+
 import os
 import sys
 import json
