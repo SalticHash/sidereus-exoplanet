@@ -1,205 +1,138 @@
-// Tab Navigation
-const tabs = document.querySelectorAll('.tab');
-const tabContents = document.querySelectorAll('.tab-content');
+// static/js/app.js
+(function () {
+  const $ = (sel, root = document) => root.querySelector(sel);
+  const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
-tabs.forEach(tab => {
-  tab.addEventListener('click', () => {
-    const targetTab = tab.dataset.tab;
-    
-    // Update active tab
-    tabs.forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    
-    // Update active content
-    tabContents.forEach(content => {
-      if (content.id === $[targetTab].Form) 
-      {
-        content.classList.add('active');
-    } 
-      else {
-        content.classList.remove('active');
+  function toNumberOrLeave(val) {
+    if (val == null || val === "") return undefined;
+    const n = Number(String(val).replace(",", "."));
+    return Number.isFinite(n) ? n : val;
+  }
+
+  function normKey(raw) {
+    // quita prefijo s_/c_
+    let k = raw.replace(/^(s_|c_)/, "");
+    // mapeos compatibles con backend
+    if (k.startsWith("star_")) k = "stellar_" + k.slice(5);
+    if (k === "insolation_flux") k = "insolation";
+    return k;
+  }
+
+  function collectFromForm(form) {
+    const data = {};
+    // toma todos los inputs con id que empiece en s_ o c_
+    $$('input[id^="s_"], input[id^="c_"], select[id^="s_"], select[id^="c_"], textarea[id^="s_"], textarea[id^="c_"]', form)
+      .forEach(el => {
+        const key = normKey(el.id);
+        const v = toNumberOrLeave(el.value);
+        if (v !== undefined) data[key] = v;
+      });
+    return data;
+  }
+
+  function validateMin(payload) {
+    const min = ["orbital_period", "transit_duration", "transit_depth"];
+    return min.filter(k => payload[k] !== undefined && payload[k] !== null).length >= 2;
+  }
+
+  function setLoading(btn, on) {
+    const loader = btn?.querySelector(".loader");
+    if (!loader) return;
+    loader.classList.toggle("hidden", !on);
+    btn.disabled = !!on;
+  }
+
+  async function submitForm(form, resultBox, submitBtn) {
+    const payload = collectFromForm(form);
+
+    if (!validateMin(payload)) {
+      resultBox.classList.remove("hidden");
+      resultBox.innerHTML = `<div class="alert error">Completa al menos dos de: <code>orbital_period</code>, <code>transit_duration</code>, <code>transit_depth</code>.</div>`;
+      return;
     }
+
+    try {
+      setLoading(submitBtn, true);
+      const resp = await fetch("/api/calculateDisposition", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await resp.json().catch(() => ({}));
+      resultBox.classList.remove("hidden");
+      resultBox.innerHTML = `<pre class="${resp.ok ? "ok" : "error"}">${JSON.stringify(data, null, 2)}</pre>`;
+    } catch (err) {
+      resultBox.classList.remove("hidden");
+      resultBox.innerHTML = `<div class="alert error">${String(err)}</div>`;
+    } finally {
+      setLoading(submitBtn, false);
+    }
+  }
+
+  function clearForm(form, resultBox) {
+    $$("input, select, textarea", form).forEach(el => {
+      if (el.type === "checkbox" || el.type === "radio") el.checked = false;
+      else el.value = "";
     });
-  });
-});
-
-// Dialog Management
-function openDialog(dialogId) {
-  const dialog = document.getElementById(dialogId);
-  dialog.classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeDialog(dialogId) {
-  const dialog = document.getElementById(dialogId);
-  dialog.classList.remove('open');
-  document.body.style.overflow = '';
-}
-
-// Dialog Buttons
-document.getElementById('btnModelData').addEventListener('click', () => {
-  openDialog('dialogMetrics');
-});
-
-document.getElementById('btnEndpoints').addEventListener('click', () => {
-  openDialog('dialogEndpoints');
-});
-
-// Dialog Close Buttons
-document.querySelectorAll('.dialog-close').forEach(btn => {
-  btn.addEventListener('click', (e) => {
-    const dialog = e.target.closest('.dialog');
-    closeDialog(dialog.id);
-  });
-});
-
-// Dialog Overlay Click
-document.querySelectorAll('.dialog-overlay').forEach(overlay => {
-  overlay.addEventListener('click', (e) => {
-    const dialog = e.target.closest('.dialog');
-    closeDialog(dialog.id);
-  });
-});
-
-// Toast Function
-function showToast(title, description, variant = 'default') {
-  const container = document.getElementById('toastContainer');
-  const toast = document.createElement('div');
-  toast.className = 'toast';
-  
-  toast.innerHTML = `
-    <div class="toast-title">${title}</div>
-    <div class="toast-description">${description}</div>
-  `;
-  
-  container.appendChild(toast);
-  
-  setTimeout(() => {
-    toast.style.animation = 'fadeOut 0.3s';
-    setTimeout(() => toast.remove(), 300);
-  }, 3000);
-}
-
-// Simple Form
-const simpleForm = document.getElementById('formSimple');
-const simpleResult = document.getElementById('simpleResult');
-const btnClearSimple = document.getElementById('btnClearSimple');
-
-simpleForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  
-  const submitBtn = simpleForm.querySelector('button[type="submit"]');
-  const loader = submitBtn.querySelector('.loader');
-  
-  // Show loader
-  loader.classList.remove('hidden');
-  submitBtn.disabled = true;
-  simpleResult.classList.add('hidden');
-  
-  try {
-    // Get form data
-    const formData = {
-      orbital_period: document.getElementById('s_orbital_period').value,
-      planet_radius: document.getElementById('s_planet_radius').value,
-      equilibrium_temp: document.getElementById('s_equilibrium_temp').value
-    };
-    
-    // Simulated API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    const mockResult = {
-      disposition: 'CANDIDATE',
-      confidence: 0.87
-    };
-    
-    // Show result
-    simpleResult.innerHTML = `
-      <div class="result-text">
-        Disposición: ${mockResult.disposition}
-        <span class="result-confidence">(Confianza: ${(mockResult.confidence * 100).toFixed(1)}%)</span>
-      </div>
-    `;
-    simpleResult.classList.remove('hidden');
-    
-    showToast('Predicción generada', Disposición= $[mockResult.disposition]);
-  } catch (error) {
-    showToast('Error', 'No se pudo generar la predicción', 'destructive');
-  } finally {
-    loader.classList.add('hidden');
-    submitBtn.disabled = false;
+    resultBox.innerHTML = "";
+    resultBox.classList.add("hidden");
   }
-});
 
-btnClearSimple.addEventListener('click', () => {
-  simpleForm.reset();
-  simpleResult.classList.add('hidden');
-});
+  function wire(formId, resultId, clearBtnId) {
+    const form = document.getElementById(formId);
+    const resultBox = document.getElementById(resultId);
+    const clearBtn = document.getElementById(clearBtnId);
+    if (!form || !resultBox) return;
 
-// Complete Form
-const completeForm = document.getElementById('formComplete');
-const completeResult = document.getElementById('completeResult');
-const btnClearComplete = document.getElementById('btnClearComplete');
+    // evita submit por defecto
+    form.addEventListener("submit", e => e.preventDefault());
 
-completeForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  
-  const submitBtn = completeForm.querySelector('button[type="submit"]');
-  const loader = submitBtn.querySelector('.loader');
-  
-  // Show loader
-  loader.classList.remove('hidden');
-  submitBtn.disabled = true;
-  completeResult.classList.add('hidden');
-  
-  try {
-    // Get form data
-    const formData = {
-      orbital_period: document.getElementById('c_orbital_period').value,
-      planet_radius: document.getElementById('c_planet_radius').value,
-      equilibrium_temp: document.getElementById('c_equilibrium_temp').value,
-      insolation_flux: document.getElementById('c_insolation_flux').value,
-      star_radius: document.getElementById('c_star_radius').value,
-      star_mass: document.getElementById('c_star_mass').value,
-      star_temp: document.getElementById('c_star_temp').value,
-      transit_depth: document.getElementById('c_transit_depth').value
-    };
-    
-    // Simulated API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    const mockResult = {
-      disposition: 'CONFIRMED',
-      confidence: 0.94
-    };
-    
-    // Show result
-    completeResult.innerHTML = `
-      <div class="result-text">
-        Disposición: ${mockResult.disposition}
-        <span class="result-confidence">(Confianza: ${(mockResult.confidence * 100).toFixed(1)}%)</span>
-      </div>
-    `;
-    completeResult.classList.remove('hidden');
-    
-    showToast('Predicción generada', Disposición= $[mockResult.disposition]);
-  } catch (error) {
-    showToast('Error', 'No se pudo generar la predicción', 'destructive');
-  } finally {
-    loader.classList.add('hidden');
-    submitBtn.disabled = false;
+    // captura el botón de submit del form actual
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    // click en submit => API
+    submitBtn?.addEventListener("click", (e) => {
+      e.preventDefault();
+      submitForm(form, resultBox, submitBtn);
+    });
+
+    // botón limpiar
+    clearBtn?.addEventListener("click", (e) => {
+      e.preventDefault();
+      clearForm(form, resultBox);
+    });
   }
-});
 
-btnClearComplete.addEventListener('click', () => {
-  completeForm.reset();
-  completeResult.classList.add('hidden');
-});
+  function main() {
+    wire("formSimple", "simpleResult", "btnClearSimple");
+    wire("formComplete", "completeResult", "btnClearComplete");
 
-// Close dialogs with Escape key
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    document.querySelectorAll('.dialog.open').forEach(dialog => {
-      closeDialog(dialog.id);
-});
+    // tabs: mostrar/ocultar secciones si tienes .tab y data-tab
+    const tabs = $$(".tab");
+    const sections = {
+      simple: $("#tab-simple"),
+      complete: $("#tab-complete"),
+    };
+    tabs.forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        tabs.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        const t = btn.getAttribute("data-tab");
+        if (t === "simple") {
+          sections.simple?.classList.remove("hidden");
+          sections.complete?.classList.add("hidden");
+        } else {
+          sections.complete?.classList.remove("hidden");
+          sections.simple?.classList.add("hidden");
+        }
+      });
+    });
   }
-});
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", main);
+  } else {
+    main();
+  }
+})();
