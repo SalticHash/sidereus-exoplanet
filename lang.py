@@ -1,5 +1,4 @@
 import sys
-import json
 from pathlib import Path
 from os import listdir
 
@@ -7,58 +6,74 @@ from os import listdir
 try:
     import tomllib  # stdlib
     _load_toml = lambda b: tomllib.loads(b)
-except Exception:
-    # Fallback to tomli / Recurso a tomli
+except Exception:  # Py<3.11 fallback / Recurso para Py<3.11
     import tomli
     _load_toml = lambda b: tomli.loads(b)
 
 class LanguageDict(dict):
     """
-    Load all TOML language files from a folder
-    Carga todos los archivos TOML de idioma desde una carpeta
+    Load TOML language files from folder
+    Carga archivos de idioma TOML desde carpeta
     """
 
-    def __init__(self, path=None):
+    def __init__(self, path=None, default_code: str = "en"):
         # Base directory / Directorio base
         base = Path(__file__).resolve().parent
 
-        # Default path / Ruta por defecto
+        # Default path (relative to this file) / Ruta por defecto (relativa a este archivo)
         if path is None:
-            lang_dir = base / "static" / "lang"
+            self._lang_dir = base / "static" / "lang"
         else:
             p = Path(path)
-            lang_dir = p if p.is_absolute() else (base / p)
+            self._lang_dir = p if p.is_absolute() else (base / p)
 
-        # Ensure folder exists / Verifica existencia de carpeta
-        if not lang_dir.exists():
-            print(f"[WARN] Language folder not found / Carpeta no encontrada: {lang_dir}")
-            super().__init__({})
-            return
+        # Active language code / Código de idioma activo
+        self.code = (default_code or "en").lower()
 
         data = {}
-        # Load each TOML file / Carga cada archivo TOML
-        for filename in listdir(lang_dir):
-            file_path = lang_dir / filename
-            ext = file_path.suffix.lower()
-            if ext in (".toml", ".tom") and file_path.is_file():
-                try:
-                    raw = file_path.read_bytes()
-                    doc = _load_toml(raw)
-                    # Flatten 1-level tables if you store nested / Aplana un nivel si usas tablas
-                    # Aquí asumimos claves simples k=v / We assume simple k=v keys
-                    data[file_path.stem] = doc
-                except Exception as e:
-                    print(f"[WARN] Cannot load / No se pudo cargar {file_path.name}: {e}")
+        if not self._lang_dir.exists():
+            print(f"[WARN] Language folder not found / Carpeta no encontrada: {self._lang_dir}")
+        else:
+            for filename in listdir(self._lang_dir):
+                file_path = self._lang_dir / filename
+                ext = file_path.suffix.lower()
+                if file_path.is_file() and ext in (".toml", ".tom"):
+                    try:
+                        raw = file_path.read_bytes()
+                        doc = _load_toml(raw)  # dict
+                        data[file_path.stem] = doc
+                    except Exception as e:
+                        print(f"[WARN] Cannot load / No se pudo cargar {file_path.name}: {e}")
 
         super().__init__(data)
 
-    def get_text(self, lang_code: str, key: str, default: str = "") -> str:
+        if self:
+            print(f"[INFO] Loaded languages / Idiomas cargados: {', '.join(self.keys())}")
+        else:
+            print("[WARN] No languages loaded / No se cargaron idiomas")
+
+    def as_dict(self) -> dict:
+        """Return all languages dict / Devuelve todos los idiomas"""
+        return dict(self)
+
+    def set_code(self, lang_code: str):
+        """Set active language code / Establece el idioma activo"""
+        if not lang_code:
+            return
+        self.code = lang_code.split("-")[0].lower()
+
+    def detect_from_request(self, request, fallback: str = "en"):
+        """Detect from Accept-Language / Detecta desde Accept-Language"""
+        header = request.headers.get("Accept-Language", "") or ""
+        code = header.split(",")[0].split("-")[0].strip().lower() or fallback
+        self.set_code(code)
+
+    def get_text(self, key: str, default: str = "") -> str:
         """
-        Return translated text / Devuelve el texto traducido
+        Return translated text for active code
+        Devuelve texto traducido para el idioma activo
         """
-        node = self.get(lang_code, {})
-        # Support nested keys "a.b.c" / Soporta claves anidadas "a.b.c"
-        cur = node
+        cur = self.get(self.code, {})
         for part in key.split("."):
             if isinstance(cur, dict) and part in cur:
                 cur = cur[part]
@@ -67,26 +82,7 @@ class LanguageDict(dict):
         return cur if isinstance(cur, str) else default
 
     def available_languages(self):
-        """
-        List available languages / Lista los idiomas disponibles
-        """
+        """List available languages / Lista idiomas disponibles"""
         return list(self.keys())
 
-def detect_browser_language(request) -> str:
-    """
-    Detect browser language / Detecta idioma del navegador
-    Example / Ejemplo: 'es-ES,es;q=0.9,en;q=0.8' → 'es'
-    """
-    header = request.headers.get("Accept-Language", "")
-    if not header:
-        return "en"
-    lang = header.split(",")[0].split("-")[0].strip().lower()
-    return lang or "en"
-
-LANG = LanguageDict(path="static/lang")
-
-# Info print / Mensaje informativo
-if LANG:
-    print(f"[INFO] Loaded languages / Idiomas cargados: {', '.join(LANG.available_languages())}")
-else:
-    print("[WARN] No languages loaded / No se cargaron idiomas")
+LANG = LanguageDict(path="static/lang", default_code="en")
