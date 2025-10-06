@@ -12,15 +12,11 @@ except Exception:
 class LanguageDict(dict):
     def __init__(self, path=None, default_code: str = "en"):
         base = Path(__file__).resolve().parent
-        if path is None:
-            self._lang_dir = base / "static" / "lang"
-        else:
-            p = Path(path)
-            self._lang_dir = p if p.is_absolute() else (base / p)
-
+        p = Path(path) if path else (base / "static" / "lang")
+        self._lang_dir = p if p.is_absolute() else (base / p)
         self.code = (default_code or "en").lower()
-        data = {}
 
+        data = {}
         if not self._lang_dir.exists():
             print(f"[WARN] Language folder not found / Carpeta no encontrada: {self._lang_dir}")
         else:
@@ -29,11 +25,11 @@ class LanguageDict(dict):
                 ext = file_path.suffix.lower()
                 if file_path.is_file() and ext in (".toml", ".tom"):
                     try:
-                        raw = file_path.read_bytes()  # bytes
+                        txt = file_path.read_text(encoding="utf-8")  # str
                         if _use_tomllib:
-                            doc = tomllib.loads(raw)               # bytes -> dict
+                            doc = tomllib.loads(txt)                 # str -> dict
                         else:
-                            doc = tomli.loads(raw.decode("utf-8")) # str   -> dict
+                            doc = tomli.loads(txt)                   # str -> dict
                         data[file_path.stem] = doc
                     except Exception as e:
                         print(f"[WARN] Cannot load / No se pudo cargar {file_path.name}: {e}")
@@ -44,9 +40,8 @@ class LanguageDict(dict):
         return dict(self)
 
     def set_code(self, lang_code: str):
-        if not lang_code:
-            return
-        self.code = lang_code.split("-")[0].lower()
+        if lang_code:
+            self.code = lang_code.split("-")[0].lower()
 
     def detect_from_request(self, request, fallback: str = "en"):
         header = request.headers.get("Accept-Language", "") or ""
