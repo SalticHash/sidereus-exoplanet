@@ -2,10 +2,10 @@ from pathlib import Path
 from os import listdir
 
 try:
-    import tomllib
+    import tomllib  # Py>=3.11
     _use_tomllib = True
 except Exception:
-    import tomli
+    import tomli     # Py<3.11
     _use_tomllib = False
 
 
@@ -29,21 +29,16 @@ class LanguageDict(dict):
                 ext = file_path.suffix.lower()
                 if file_path.is_file() and ext in (".toml", ".tom"):
                     try:
-                        raw = file_path.read_bytes()
+                        raw = file_path.read_bytes()  # bytes
                         if _use_tomllib:
-                            doc = tomllib.loads(raw.decode("utf-8"))
+                            doc = tomllib.loads(raw)               # bytes -> dict
                         else:
-                            doc = tomli.loads(raw.decode("utf-8"))
+                            doc = tomli.loads(raw.decode("utf-8")) # str   -> dict
                         data[file_path.stem] = doc
                     except Exception as e:
                         print(f"[WARN] Cannot load / No se pudo cargar {file_path.name}: {e}")
 
         super().__init__(data)
-
-        if self:
-            print(f"[INFO] Loaded languages / Idiomas cargados: {', '.join(self.keys())}")
-        else:
-            print("[WARN] No languages loaded / No se cargaron idiomas")
 
     def as_dict(self) -> dict:
         return dict(self)
