@@ -355,3 +355,7 @@ code{
   .form-item{ grid-column: span 12; }
   .container{ margin-top: 84px; }
 }
+
+.hidden { display: none; }
+.tab.active { font-weight: 600; }
+.tab-panel { margin-top: 1rem; }
