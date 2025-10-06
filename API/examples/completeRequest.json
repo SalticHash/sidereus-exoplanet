@@ -1,0 +1,73 @@
+{
+    "id": "TIC 123456789",
+    "name": "TOI-123",
+    "disposition": "CANDIDATE",
+    "score": "0.85",
+    "ra": "123.456",
+    "dec": "-45.678",
+
+    "orbital_period": {
+        "value": 10.5,
+        "err_upper": 0.2,
+        "err_lower": 0.3,
+        "units": "days"
+    },
+    "transit_epoch": {
+        "value": 2459000.123,
+        "err_upper": 0.001,
+        "err_lower": 0.002,
+        "units": "BJD"
+    },
+    "transit_duration": {
+        "value": 2.5,
+        "err_upper": 0.1,
+        "err_lower": 0.1,
+        "units": "hours"
+    },
+    "transit_depth": {
+        "value": 500,
+        "err_upper": 20,
+        "err_lower": 15,
+        "units": "ppm"
+    },
+    "planet_radius": {
+        "value": 1.5,
+        "err_upper": 0.1,
+        "err_lower": 0.05,
+        "units": "R_Earth"
+    },
+    "equilibrium_temp": {
+        "value": 800,
+        "err_upper": 50,
+        "err_lower": 40,
+        "units": "K"
+    },
+    "insolation": {
+        "value": 1.2,
+        "err_upper": 0.1,
+        "err_lower": 0.1,
+        "units": "Earth flux"
+    },
+
+    "stellar_temp": {
+        "value": 5500,
+        "err_upper": 100,
+        "err_lower": 90,
+        "units": "K"
+    },
+    "stellar_logg": {
+        "value": 4.4,
+        "err_upper": 0.05,
+        "err_lower": 0.04,
+        "units": "cm/s^2"
+    },
+    "stellar_radius": {
+        "value": 1.0,
+        "err_upper": 0.05,
+        "err_lower": 0.04,
+        "units": "R_Sun"
+    },
+
+    "created": "2025-09-24",
+    "updated": "2025-09-24"
+}
